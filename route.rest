@@ -1,0 +1,1151 @@
+POST http://localhost:3000/version
+Content-Type: application/json
+
+{
+    "branchId": "6332a9b7b87b0f5f682934e7"
+}
+
+###
+
+GET http://localhost:3000/admin
+
+###
+
+POST http://localhost:3000/admin
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "uYo1&Nm5228v"
+}
+
+###
+
+DELETE http://localhost:3000/admin/63ada0ea75fd34b82eefb8e3
+
+###
+
+POST http://localhost:3000/admin/login
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "uYo1&Nm5228v"
+}
+
+###
+
+GET http://localhost:3000/users/clone
+
+###
+
+GET http://localhost:3000/users/632eb896de538579c2671a97
+
+###
+
+POST http://localhost:3000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJpbWFfZ2hvdWxhbUBob3RtYWlsLmNvbSIsImlhdCI6MTY3MjMwMzQ5M30.JoSaxgXfbkGxy42Ruahpvlvrwr0SL6Mh0jlSxWfpKzg
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+
+}
+
+###
+
+POST http://localhost:3000/users/register
+Content-Type: application/json
+
+{
+    "profile": "x",
+    "name": "rimaa",
+    "email": "rima_ghoulam@hotmail.com",
+    "password": "123",
+    "notification_userId": "x"
+}
+
+###
+
+POST http://localhost:3000/users/change_password
+Content-Type: application/json
+
+{
+    "userId": "6376324b7c36a41e0bbb608f",
+    "old_password": "1234",
+    "new_password": "123"
+}
+
+###
+
+GET http://localhost:3000/users/verification
+
+###
+
+POST http://localhost:3000/users/verification/bhivelb@gmail.com/6yzpMn6OSPAnNre
+
+###
+
+PATCH http://localhost:3000/users/640b92ee7b11cf3671a1e57ax
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDBiOTJlZTdiMTFjZjM2NzFhMWU1N2EiLCJpYXQiOjE2ODEyMzc4OTl9.6RDIjXuJQLU7iUSSgq7hkYLdwS0pfGhXtA88xOL-QzE
+Content-Type: application/json
+
+{
+    "loyalty_points": 65
+}
+
+###
+
+DELETE http://localhost:3000/users/63c28036d749e88929f8f8e7
+
+###
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email": "rima_ghoulam@hotmail.com",
+    "password": "123",
+    "notification_userId": "05a4f36c-9eb9-4a10-abf9-00a3326c2cf6"
+}
+
+###
+
+POST http://localhost:3000/notification
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
+Content-Type: application/json
+
+{
+    "managerId": "63b9449a81011df3f388f4f1",
+    "price": "1"
+}
+
+###
+
+GET http://localhost:3000/spaces/test_notification
+
+###
+
+GET http://localhost:3000/spaces
+
+###
+
+GET  http://localhost:3000/spaces/branch/6332a9b7b87b0f5f682934e7
+
+###
+
+GET http://localhost:3000/spaces/6328b735f8b49d1abbfbd0b2
+
+###
+
+POST http://localhost:3000/spaces
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyMzI1NTY3fQ.F22qSzn2cOhOP8z3dVZ7x3y42vPSEsBRQELXivjUTQI
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+    "title": "The conference room in beirut",
+    "image": "",
+    "upto": "Fits ups to 30 people",
+    "price": "60",
+    "features": "<ul><li>Projector</li><li>White board</li><li>White screen</li><li>Microphone & speaker</li></ul>",
+    "ideal_for": "<ul><li>Students</li><li>Startups</li><li>NGOs</li><li>Talks</li></ul>"
+}
+
+###
+
+PATCH http://localhost:3000/spaces/633e9b3e8ad3a0888085fae1
+Content-Type: application/json
+
+{
+    "title": "conference room 2"
+}
+
+###
+
+POST http://localhost:3000/spaces/book
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzY4MTc1NjN9.xY2Nc-NDRGnwxeO6qNetXZSQNZb3lxI7NJSgJZfmZiU
+Content-Type: application/json
+
+{
+   "user_id": "636be6ef546989cece303022",
+   "space_id": "6332e3a70506a9ce29af3866",
+   "from_date": "2023-01-20 06:00:00.000Z",
+   "till_date": "2023-01-21 07:00:00.000Z",
+   "total_price": 10,
+   "pay_with": "binance"
+}
+
+###
+
+GET http://localhost:3000/spaces/book/user-636be6ef546989cece303022
+
+###
+
+PATCH http://localhost:3000/spaces/cancel-book/63da29a90fdbc827dfe04172
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzY4MTc1NjN9.xY2Nc-NDRGnwxeO6qNetXZSQNZb3lxI7NJSgJZfmZiU
+
+###
+
+GET http://localhost:3000/spaces/book
+
+###
+
+DELETE http://localhost:3000/spaces/book/634658d3142f9c12942f251a
+
+###
+
+DELETE http://localhost:3000/spaces/634658d3142f9c12942f251a
+
+###
+
+DELETE http://localhost:3000/spaces/clear-book
+
+###
+
+GET http://localhost:3000/merchandises
+
+###
+
+GET http://localhost:3000/merchandises/country/6332a0e89cd96e0d9a025da3
+
+###
+
+GET http://localhost:3000/merchandises/variations
+
+###
+
+GET http://localhost:3000/merchandises/63873208df54d2d6b43b8244
+
+###
+
+POST http://localhost:3000/merchandises
+Content-Type: application/json
+
+{
+    "country": "6332a0e89cd96e0d9a025da3",
+    "category": "638523a82752d6ccaeeefd3b",
+    "image": "",
+    "title": "test product",
+    "description": "Lorem ipsum, lorem ipsum",
+    "price": 30
+}
+
+###
+
+POST http://localhost:3000/merchandises/variations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+    "variations": [
+        {
+            "merchandises": "638732d5df54d2d6b43b824e",
+            "size": "One size",
+            "color": "Black",
+            "price": 10,
+            "stock": 3
+        },
+        {
+            "merchandises": "638732d5df54d2d6b43b824e",
+            "size": "One size",
+            "color": "Black",
+            "price": 10,
+            "stock": 3
+        }
+    ]
+}
+
+###
+
+PATCH http://localhost:3000/merchandises/638732d5df54d2d6b43b824e
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNiNzIzNjdiNTQxYWIxZTI5MjlmOWJlIiwiaWF0IjoxNjczODY1MjU3fQ.egORkx0RCXAxo2bth1NsoycRUQ-JM88KTtBPH1DIJAY
+Content-Type: application/json
+
+{
+    "adminId": "63b72367b541ab1e2929f9be",
+    "category": "638523a82752d6ccaeeefd3b",
+    "image": "",
+    "title": "test product",
+    "description": "Lorem ipsum, lorem ipsum"
+}
+
+###
+
+DELETE http://localhost:3000/merchandises/633568dc29376d6672aa47bd
+
+###
+
+PATCH http://localhost:3000/merchandises/variation/634feaa08c6887c1cf5de37b
+Content-Type: application/json
+
+{
+    "stock": 1
+}
+
+###
+
+DELETE http://localhost:3000/merchandises/variation/632ea7182338b7e767763532
+
+###
+
+GET http://localhost:3000/countries
+
+###
+
+POST http://localhost:3000/countries
+Content-Type: application/json
+
+{
+    "country": "test"
+}
+
+###
+
+PATCH http://localhost:3000/countries/6332a0e89cd96e0d9a025da3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+    "country": "Beirut"
+}
+
+###
+
+DELETE http://localhost:3000/countries/6332a72f344c376dfc3c9a6e
+
+###
+
+POST http://localhost:3000/branches
+Content-Type: application/json
+
+{
+    "name": "branch test",
+    "country": "6332a72f344c376dfc3c9a6e"
+}
+
+###
+
+GET http://localhost:3000/countries
+
+###
+
+GET http://localhost:3000/branches/6332a0e89cd96e0d9a025da3
+
+###
+
+PATCH http://localhost:3000/branches/6332a9b7b87b0f5f682934e7
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+    "name": "Beirut - hamra"
+}
+
+###
+
+DELETE http://localhost:3000/branches/63bc7af782706273c175f428
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3"
+}
+
+###
+
+DELETE http://localhost:3000/countries/63bc7af782706273c175f428
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3"
+}
+
+###
+
+POST http://localhost:3000/wifi
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+    "branch": "6332a9b7b87b0f5f682934e7",
+    "code": "282hdhd",
+    "available": "yes"
+}
+
+###
+
+POST http://localhost:3000/wifi
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+    "branch": "6332a9b7b87b0f5f682934e7",
+    "code": "test"
+}
+
+###
+
+POST http://localhost:3000/wifi/6332a9b7b87b0f5f682934e7
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3"
+}
+
+###
+
+GET http://localhost:3000/wifi/user/6356c24d2338c8f5cf5ee8bc/6332a9b7b87b0f5f682934e7
+
+####
+
+PATCH http://localhost:3000/wifi/63623869c33870cf64cbeb38
+Content-Type: application/json
+
+{
+    "available": "yes"
+}
+
+###
+
+DELETE http://localhost:3000/wifi/63c93800c76566d5889c75c9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3"
+}
+
+###
+
+GET http://localhost:3000/categories
+
+###
+
+POST http://localhost:3000/categories
+Content-Type: application/json
+
+{
+    "country": "6332a0e89cd96e0d9a025da3",
+    "name": "Dessert",
+    "icon": "uploads/1119036160-file-Group 109.png",
+    "color": "#eaede1",
+    "type": "menu"
+}
+
+###
+
+PATCH http://localhost:3000/categories/636be6ef546989cece303022
+Content-Type: application/json
+
+{
+    "color": "#E1E3ED"
+}
+
+###
+
+DELETE http://localhost:3000/categories/634801be446d60035f736f4d
+
+###
+
+DELETE http://localhost:3000/categories/my-638766716c0bf952dec58fdd
+
+###
+
+GET http://localhost:3000/menu/all/6332a0e89cd96e0d9a025da3
+
+###
+
+GET http://localhost:3000/menu/category/638766716c0bf952dec58fdd
+
+###
+
+GET http://localhost:3000/menu/638766716c0bf952dec58fdd
+
+###
+
+GET http://localhost:3000/menu/country/6332a0e89cd96e0d9a025da3
+
+###
+
+POST http://localhost:3000/menu
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+    "country": "6332a0e89cd96e0d9a025da3",
+    "category": "638766a96c0bf952dec58fe3",
+    "image": "a",
+    "name": "Apple Pie",
+    "price": 2.5,
+    "recommended": "",
+    "contain_milk": ""
+}
+
+###
+
+POST http://localhost:3000/menu/variation
+Content-Type: application/json
+
+{
+    "itemId": "63876f646c0bf952dec59076",
+    "title": "One size",
+    "price": "0"
+}
+
+###
+
+DELETE http://localhost:3000/merchandises/all-variations
+
+###
+
+PATCH http://localhost:3000/menu/63cc31245efb1592a8155a03
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+    "order": 2
+}
+
+
+###
+
+DELETE http://localhost:3000/menu/63b729d88eb2bc530543ba8a
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3"
+}
+
+###
+
+GET http://localhost:3000/menu/recommended
+
+###
+
+GET http://localhost:3000/addOns
+
+###
+
+GET http://localhost:3000/addOns/country-6332a0e89cd96e0d9a025da3
+
+###
+
+POST http://localhost:3000/addOns
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+    "country": "6332a0e89cd96e0d9a025da3",
+    "title": "Syrup",
+    "price": "1",
+    "type": "cold drink"
+}
+
+###
+
+PATCH http://localhost:3000/addOns/63bf15b77c614d471b369251
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3",
+    "title": "updated addon with type",
+    "type": "cold drink, hot coffee"
+}
+
+###
+
+DELETE http://localhost:3000/addOns/63b6be164199de5d6e8b9cba
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyOTIwMDIzfQ.LnYeM71O0DU4a09tPCHDnzFvrN36kHk8I8jb81wKexo
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3"
+}
+
+###
+
+GET http://localhost:3000/6363850216f58fad5bc98497
+
+###
+
+POST http://localhost:3000/cart
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzIzMTA5ODh9.UOEjsHogOm3nAH4p-KSWKMajFBvATbyGgE47ajjZcTk
+Content-Type: application/json
+
+{
+    "userId": "636be6ef546989cece303022",
+    "wifi": "yes",
+    "total_price": "5",
+    "quantity": "2"
+}
+
+###
+
+POST http://localhost:3000/cart
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzI5NDY3Njd9.Qge6SALjWG9q3HPwh9JNtI65u_Zby-y-pJnl3yTDh2w
+Content-Type: application/json
+
+{
+    "userId": "636be6ef546989cece303022",
+    "merchId": "638732d5df54d2d6b43b824e",
+    "merchVarId": "63875638f35bb925150e67a7",
+    "total_price": "3.5",
+    "quantity": "1",
+    "request": ""
+}
+
+###
+
+POST http://localhost:3000/cart
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzI3ODA3NTB9.R_axYV4NNPnbs0lkz-YZkC9uy-hPozMBgqbkttSKowM
+Content-Type: application/json
+
+{
+    "userId": "636be6ef546989cece303022",
+    "menuId": "63353e424b7f141c2d249fb2",
+    "menuVarId": "63356281ac2cec4b42a29c05",
+    "total_price": "3.5",
+    "quantity": "1",
+    "milk": "63353bc04b7f141c2d249f7d",
+    "ice": "",
+    "addOns": ["63b00f0405db3e97db468b13", "6335564c4b7f141c2d24a01b"],
+    "request": ""
+}
+
+###
+
+GET http://localhost:3000/cart/63c930c9e51f940529e5aa0c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2M5MzBjOWU1MWY5NDA1MjllNWFhMGMiLCJpYXQiOjE2ODA3MTc2NTZ9.fH0Vq0_U3g27YthpE3Qw8PUxbmYJSbEO44X6_3zwW1o
+
+###
+
+PATCH http://localhost:3000/cart/63ad70f71903e24657a51a9a
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzI0Nzk3NjF9.tX8odGlFEmhS5tVSDDLv9e27-RFQgPA6xwysAT3QJPQ
+Content-Type: application/json
+
+{
+    "quantity": "1",
+    "total_price": "1"
+}
+
+###
+
+DELETE http://localhost:3000/cart/63852db6a9d95eceeea6f197
+
+###
+
+DELETE http://localhost:3000/cart/clear/636be6ef546989cece303022
+
+###
+
+GET http://localhost:3000/orders
+
+###
+
+GET http://localhost:3000/orders/63bddcebf58222b5f3bc0a03
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2FmZjJhYWM2NWMwZDc4ZDcxMDZhZjQiLCJpYXQiOjE2NzI4NTkwNTl9.xnzjTSyEaO-hEu8V3rgBQvScF8LDRnHxYDhdnVxyEuc
+
+###
+
+GET http://localhost:3000/orders/user/636be6ef546989cece303022
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzI2NTkyNDh9.vJOjTB8hUOsSVM8pwFaYSJgomBOmONN0YeiQKD03Z94
+
+###
+
+POST http://localhost:3000/orders/test-manager
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzI2NTg0MTR9.UWqe0SL1FHdf9ht1W4GNFWGZUDG7Hvz-5ki3Olug7WM
+Content-Type: application/json
+
+{
+    "branchId": "6332a9b7b87b0f5f682934e7"
+}
+
+###
+
+POST http://localhost:3000/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzI2NTg0MTR9.UWqe0SL1FHdf9ht1W4GNFWGZUDG7Hvz-5ki3Olug7WM
+Content-Type: application/json
+
+{
+    "userId": "636be6ef546989cece303022",
+    "countryId": "6332a0e89cd96e0d9a025da3",
+    "branchId": "6332a9b7b87b0f5f682934e7",
+    "total_price": 2,
+    "pay_with": "points",
+    "items" : [
+        {
+            "menuId": "63cc30c9889a82fe0cbacf43",
+            "total_price": 2,
+            "quantity": 1
+        }
+    ]
+}
+
+###
+
+PATCH http://localhost:3000/orders/clover/63839620e667728128619e2a
+Content-Type: application/json
+
+{
+    "key": "dHe%l491#0GT"
+}
+
+###
+
+DELETE http://localhost:3000/orders/64386b499213d501a21b2f80
+
+###
+
+DELETE http://localhost:3000/orders
+
+###
+
+GET http://localhost:3000/points
+
+###
+
+GET http://localhost:3000/points/bought
+
+###
+
+GET http://localhost:3000/points/user-640b92ee7b11cf3671a1e57a
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDBiOTJlZTdiMTFjZjM2NzFhMWU1N2EiLCJpYXQiOjE2ODEyMzc4OTl9.6RDIjXuJQLU7iUSSgq7hkYLdwS0pfGhXtA88xOL-QzE
+
+###
+
+GET http://localhost:3000/points/check_expiry/636be6ef546989cece303022
+
+###
+
+PATCH http://localhost:3000/points/6389b8bdb636503ffe83a162
+Content-Type: application/json
+
+{
+    "created_date": "2022-11-10T08:35:09.455Z"
+}
+
+###
+
+POST http://localhost:3000/points/generated
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNhZGEwZWE3NWZkMzRiODJlZWZiOGUzIiwiaWF0IjoxNjcyMzI1NTY3fQ.F22qSzn2cOhOP8z3dVZ7x3y42vPSEsBRQELXivjUTQI
+Content-Type: application/json
+
+{
+    "adminId": "63ada0ea75fd34b82eefb8e3"
+}
+
+###
+
+DELETE http://localhost:3000/points/user-6356c24d2338c8f5cf5ee8bc
+
+###
+
+DELETE http://localhost:3000/points/63d804f6bfb1540a3db9572d
+
+###
+
+DELETE http://localhost:3000/points
+
+###
+
+POST http://localhost:3000/points/buy
+Content-Type: application/json
+
+{
+    "userId": "636be6ef546989cece303022",
+    "price": 5
+}
+
+###
+
+GET http://localhost:3000/points/buy/all
+
+###
+
+POST http://localhost:3000/points/verifyCode/636be6ef546989cece303022/SctfdzU8PqesijQ
+
+###
+
+POST http://localhost:3000/users/forgot/rima_ghoulam@hotmail.com
+
+###
+
+POST http://localhost:3000/users/checkForgotRequest/rima_ghoulam@hotmail.com/OZwkNxjt953gX1m
+
+###
+
+GET http://localhost:3000/users/forgot
+
+###
+
+PATCH http://localhost:3000/users/forgot/63cd8b04d419fac1d622eca8
+Content-Type: application/json
+
+{
+    "password": "123"
+}
+
+###
+
+DELETE http://localhost:3000/users/forgot/634fbf8f46937d2a4175fe32
+
+###
+
+GET http://localhost:3000/events/branch/6332a9b7b87b0f5f682934e7
+
+###
+
+DELETE http://localhost:3000/events
+
+###
+
+DELETE http://localhost:3000/events/clear-book
+
+###
+
+POST http://localhost:3000/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNiNzIzNjdiNTQxYWIxZTI5MjlmOWJlIiwiaWF0IjoxNjczMjQ4OTg1fQ.f2q9yw8SelyjI5an5tFYrzhBEy6LIcc1xx4jPQxLKdM
+Content-Type: application/json
+
+{
+    "adminId": "63b72367b541ab1e2929f9be",
+    "branch": "6332a9b7b87b0f5f682934e7",
+    "image": "uploads/6067132762-file-WhatsApp Image 2022-11-09 at 19.03.29.jpeg",
+    "title": "testing notification",
+    "description": "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+    "exp_date": "2023-01-01",
+    "total_seats": "100"
+}
+
+###
+
+POST http://localhost:3000/events/gallery
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNiNzIzNjdiNTQxYWIxZTI5MjlmOWJlIiwiaWF0IjoxNjczMjQ4OTg1fQ.f2q9yw8SelyjI5an5tFYrzhBEy6LIcc1xx4jPQxLKdM
+Content-Type: application/json
+
+{
+    "adminId": "63b72367b541ab1e2929f9be",
+    "eventId": "638b2caeadf0d194a5137b9b",
+    "images": ["uploads/6067132762-file-WhatsApp Image 2022-11-09 at 19.03.29.jpeg", "uploads/6067132762-file-WhatsApp Image 2022-11-09 at 19.03.29.jpeg"]
+}
+
+###
+
+DELETE http://localhost:3000/events/gallery/6388ab16bfdf85dc05d53930
+
+###
+
+PATCH http://localhost:3000/events/63839620e667728128619e2a
+Content-Type: application/json
+
+{
+    "description": "Lorem ipsum, lorem ipsum"
+}
+
+###
+
+POST http://localhost:3000/events/book
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzUyNDYxMjF9.x2M8XDPM15DDtDIykNY4bf2Lqn8IvlJGEynGGC_TgDY
+Content-Type: application/json
+
+{
+   "user_id": "636be6ef546989cece303022",
+   "event_id": "63bdd64e7f4eaf941141eb4e"
+}
+
+###
+
+POST http://localhost:3000/events/checkBooking
+Content-Type: application/json
+
+{
+   "user_id": "6356c24d2338c8f5cf5ee8bc",
+   "event_id": "638b18421968c7ab732c1c41"
+}
+
+###
+
+POST  http://localhost:3000/events/booked/63bdd64e7f4eaf941141eb4e
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNiNzIzNjdiNTQxYWIxZTI5MjlmOWJlIiwiaWF0IjoxNjc1MjQ4MTU0fQ.28KYGUAAbmQQPhzUOicsO8CQosIXqhRooNpvfpWZxGQ
+Content-Type: application/json
+
+{
+    "adminId": "63b72367b541ab1e2929f9be"
+
+}
+
+###
+
+POST http://localhost:3000/announcement
+Content-Type: application/json
+
+{
+    "branch": "6332a9b7b87b0f5f682934e7",
+    "image": "uploads/mobile_app_banner.png"
+}
+
+###
+
+GET http://localhost:3000/announcement
+
+###
+
+POST http://localhost:3000/send_email
+Content-Type: application/json
+
+{
+    "email": "rima.ghoulam@biners.dev"
+}
+
+###
+
+POST http://localhost:3000/home
+Content-Type: application/json
+
+{
+    "branchId": "6332a9b7b87b0f5f682934e7",
+    "userId": "636be6ef546989cece303022"
+}
+
+###
+
+POST http://localhost:3000/check_pending
+Content-Type: application/json
+
+{
+    "userId": "636be6ef546989cece303022"
+}
+
+###
+
+POST http://localhost:3000/nft
+Content-Type: application/json
+
+{
+    "countryId": "6332a0e89cd96e0d9a025da3",
+    "userId": "63cd8b04d419fac1d622eca8"
+}
+
+###
+
+POST http://localhost:3000/nft/exist
+Content-Type: application/json
+
+{
+    "wallet_address": "0xc2b7c3f207668a52b0c2865f7a94ce96cb0e54c4",
+    "notification_userId": "aac917d6-ad16-446e-9aa2-b7a31ec7cc8b"
+}
+
+###
+
+POST http://localhost:3000/nft/register
+Content-Type: application/json
+
+{
+    "name": "nft user",
+    "email": "rima.ghoulam@binerss.com",
+    "password": "123",
+    "work": "",
+    "text": ""
+}
+
+###
+
+POST http://localhost:3000/nft/questions
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNiNzIzNjdiNTQxYWIxZTI5MjlmOWJlIiwiaWF0IjoxNjc1MjQ4MTU0fQ.28KYGUAAbmQQPhzUOicsO8CQosIXqhRooNpvfpWZxGQ
+Content-Type: application/json
+
+{
+    "adminId": "63b72367b541ab1e2929f9be",
+    "countryId": "6332a4cdfe9b8e512af37e15"
+}
+
+###
+
+POST http://localhost:3000/nft/addQuestion
+Content-Type: application/json
+
+{
+    "countryId": "6332a0e89cd96e0d9a025da3",
+    "userId": "63cd8b04d419fac1d622eca8",
+    "question": "Hi"
+}
+
+###
+
+POST http://localhost:3000/nft/addAnswer
+Content-Type: application/json
+
+{
+    "questionId": "63a387e25602b53d2713b250",
+    "userId": "63a387b75602b53d2713b249",
+    "answer": "Answer ..."
+}
+
+###
+
+GET http://localhost:3000/nft/benefits
+
+###
+
+DELETE http://localhost:3000/nft/clear
+
+###
+
+DELETE http://localhost:3000/nft/question-64234d30996b0d6269e9781f
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNiNzIzNjdiNTQxYWIxZTI5MjlmOWJlIiwiaWF0IjoxNjc1MjQ4MTU0fQ.28KYGUAAbmQQPhzUOicsO8CQosIXqhRooNpvfpWZxGQ
+Content-Type: application/json
+
+{
+    "adminId": "63b72367b541ab1e2929f9be"
+}
+
+###
+
+GET http://localhost:3000/levels
+
+###
+
+POST http://localhost:3000/levels
+Content-Type: application/json
+
+{
+    "level": "b4",
+    "start_at": "3001",
+    "end_at": "4000",
+    "booking_disc": "30",
+    "merch_disc": "25"
+}
+
+###
+
+GET http://localhost:3000/manager
+
+###
+
+POST http://localhost:3000/manager
+Content-Type: application/json
+
+{
+    "username": "manager",
+    "password": "jdb&d63nsg",
+    "branch": "6332a9b7b87b0f5f682934e7"
+}
+
+###
+
+POST http://localhost:3000/manager/login
+Content-Type: application/json
+
+{
+    "username": "manager",
+    "password": "jdb&d63nsg",
+    "notification_managerId": "05a4f36c-9eb9-4a10-abf9-00a3326c2cf6"
+}
+
+###
+
+POST http://localhost:3000/manager/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
+Content-Type: application/json
+
+{
+    "managerId": "63b9449a81011df3f388f4f1",
+    "date": "2023-01-07" 
+}
+
+###
+
+POST http://localhost:3000/manager/orders_by_date
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
+Content-Type: application/json
+
+{
+    "managerId": "63b9449a81011df3f388f4f1",
+    "date": "2023-01-14" 
+}
+
+###
+
+PATCH http://localhost:3000/manager/confirm-63b9631f1a14c677f5bfc9cf
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
+Content-Type: application/json
+
+{
+    "managerId": "63b9449a81011df3f388f4f1"
+}
+
+###
+
+POST http://localhost:3000/manager/generate-points
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
+Content-Type: application/json
+
+{
+    "managerId": "63b9449a81011df3f388f4f1",
+    "price": "1"
+}
+
+###
+
+POST http://localhost:3000/manager/space-bookings
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
+Content-Type: application/json
+
+{
+    "managerId": "63b9449a81011df3f388f4f1",
+    "date": "2023-02-02"
+}
+
+###
+
+POST http://localhost:3000/manager/all-space-bookings
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzY0NDc2ODl9.Kw2KCSbsBxLNfbp21j0JtOwqkVet3gicVGHH7IQh2b4
+Content-Type: application/json
+
+{
+    "managerId": "63b9449a81011df3f388f4f1"
+}
+
+###
+
+POST http://localhost:3000/admin/refund
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNiNzIzNjdiNTQxYWIxZTI5MjlmOWJlIiwiaWF0IjoxNjc1MTA0NjgwfQ.Ji4mhDLfkQeloFF71mJgQYQg7P-gPBe-ZPK7cTfRHi0
+Content-Type: application/json
+
+{
+    "adminId": "63b72367b541ab1e2929f9be",
+    "userId": "636be6ef546989cece303022",
+    "points": 100
+
+}
+
+###
+
+PATCH http://localhost:3000/admin/change-status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjNiNzIzNjdiNTQxYWIxZTI5MjlmOWJlIiwiaWF0IjoxNjc1MTA0NjgwfQ.Ji4mhDLfkQeloFF71mJgQYQg7P-gPBe-ZPK7cTfRHi0
+Content-Type: application/json
+
+{
+    "adminId": "63b72367b541ab1e2929f9be",
+    "userId": "636be6ef546989cece303022",
+    "type": "user"
+
+}
+
+###
+
+GET http://localhost:3000/terms/lebanon
+
