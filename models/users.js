@@ -74,6 +74,14 @@ const usersTable = new mongoose.Schema({
     type: String,
     default: "user",
   },
+  cloverId: {
+    type: String,
+    required: false,
+  },
+  cardDigits: {
+    type: String,
+    required: false,
+  },
   created_date: {
     type: Date,
     required: true,
