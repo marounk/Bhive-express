@@ -345,6 +345,42 @@ router.patch("/change_notificationId/user-:id", getUsers, async (req, res) => {
     }
 });
 
+//update user cloverId
+router.patch("/change_cloverId/user-:id", getUsers, async (req, res) => {
+    if (req.body.key == "dHe%l491#0GT") {
+        if (req.body.cloverId != null) {
+            res.user.cloverId = req.body.cloverId;
+        }
+
+        try {
+            const updatedUser = await res.user.save();
+            res.json(updatedUser);
+        } catch (err) {
+            res.status(400).json({ message: err.message });
+        }
+    } else {
+        res.json({ message: "Unauthorised call!" });
+    }
+});
+
+//Update user cardDigits
+router.patch("/change_cardDigits/user-:id", getUsers, async (req, res) => {
+    if (req.body.key == "dHe%l491#0GT") {
+        if (req.body.cardDigits != null) {
+            res.user.cardDigits = req.body.cardDigits;
+        }
+
+        try {
+            const updatedUser = await res.user.save();
+            res.json(updatedUser);
+        } catch (err) {
+            res.status(400).json({ message: err.message });
+        }
+    } else {
+        res.json({ message: "Unauthorised call!" });
+    }
+});
+
 //Update user
 router.patch("/:id", getUsers, async (req, res) => {
     const authHeader = req.headers["authorization"];
