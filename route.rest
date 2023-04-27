@@ -39,7 +39,7 @@ GET http://localhost:3000/users/clone
 
 ###
 
-GET http://localhost:3000/users/632eb896de538579c2671a97
+GET http://localhost:3000/users/636be6ef546989cece303022
 
 ###
 
@@ -77,6 +77,16 @@ Content-Type: application/json
 
 ###
 
+PATCH http://localhost:3000/users/change_cloverId/user-6356c24d2338c8f5cf5ee8bc
+Content-Type: application/json
+
+{
+    "cloverId": "Y5YJYK0S5EYG0",
+    "key": "dHe%l491#0GT"
+}
+
+###
+
 GET http://localhost:3000/users/verification
 
 ###
@@ -95,7 +105,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/users/63c28036d749e88929f8f8e7
+DELETE http://localhost:3000/users/632eb896de538579c2671a97
 
 ###
 
