@@ -41,7 +41,7 @@ const points = require("../models/points");
 //Get user by id
 router.get("/:id", async (req, res) => {
     try {
-        const user = await Users.findById(req.params.id);
+        const user = await Users.findById(req.params.id).select(["profile","name","email","active","created_date","customized_userId","level","type","notification_userId","loyalty_points","country","cloverId","cardDigits"]);
         res.send(user);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -62,7 +62,7 @@ router.post("/", async (req, res) => {
                 res.status(400).json({ message: "token error" });
             } else {
                 try {
-                    const all_users = await Users.find();
+                    const all_users = await Users.find().select(["profile","name","email","active","created_date","customized_userId","level","type","notification_userId","loyalty_points","country","cloverId","cardDigits"]);
                     res.json(all_users);
                 } catch (err) {
                     res.status(500).json({ message: err.message });
@@ -311,7 +311,6 @@ router.patch("/change_type/user-:id", getUsers, async (req, res) => {
         if (req.body.type != null) {
             res.user.type = req.body.type;
         }
-
         if (req.body.wallet_address != null) {
             res.user.wallet_address = req.body.wallet_address;
         }
@@ -443,7 +442,7 @@ router.delete("/:id", getUsers, async (req, res) => {
 async function getUsers(req, res, next) {
     let user;
     try {
-        user = await Users.findById(req.params.id);
+        user = await Users.findById(req.params.id).select(["profile","name","email","active","created_date","customized_userId","level","type","notification_userId","loyalty_points","country","cloverId","cardDigits"]);
         if (user == null) {
             return res.status(400).json({ message: "User not found" });
         }
