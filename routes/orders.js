@@ -18,6 +18,7 @@ const Merch = require("../models/merchandises");
 const MerchVar = require("../models/variations");
 const AddOns = require("../models/addOns");
 const Manager = require("../models/manager");
+const Levels = require("./models/levels");
 
 const apiKey = "rwzzqd5vfu0dhnutywrj0oocubbasdsxdqxnvxossjesw1b0nj1gswrk4oxbwyzc"; // set your API key here
 const apiSecret = "ubc7ztfkcc9nushbra4oaopgr7tecocmr3wp8fik7q9kgclk7wmja18qpmhowtrp"; // set your secret key here
@@ -319,7 +320,9 @@ router.post("/", authenticateToken, async (req, res) => {
                         ]);
                         my_order.status = "SUCCESS";
                         await my_order.save();
-                        await Cart.find({ userId: req.body.userId }).remove();
+
+                        const userCountry = await Users.findById(req.body.userId)
+                        await Cart.find({ userId: req.body.userId, country: userCountry.country }).remove();
 
                         try {
                             // notification to user
@@ -432,10 +435,159 @@ router.get("/:id", getOrderDetails, async (req, res) => {
 //Update
 router.patch("/clover/:id", async (req, res) => {
     if (req.body.key == "dHe%l491#0GT") {
-        const order = await Orders.findById(req.params.id);
-        try {
+        const order = await Orders.findById(req.params.id).populate("userId", [
+            "country",
+            "notification_userId"
+          ]);
+
+          try {
             order.status = "SUCCESS";
             const updatedOrder = await order.save();
+            await Cart.find({ userId: order.userId._id, country: order.userId.country }).remove();
+
+            const current_date = new Date();
+            const current_day = current_date.getDate();
+            const current_month = current_date.getMonth() + parseInt(1);
+            const current_year = current_date.getFullYear();
+
+            let exp_day;
+            let exp_month;
+            let exp_year;
+            if (current_day == 29) {
+              exp_day = 1;
+              exp_month = current_month + parseInt(7);
+            } else if (current_day == 30) {
+              exp_day = 1;
+              exp_month = current_month + parseInt(7);
+            } else if (current_day == 31) {
+              exp_day = 1;
+              exp_month = current_month + parseInt(7);
+            } else {
+              exp_day = current_day;
+              exp_month = current_month + parseInt(6);
+            }
+            if (exp_month > 12) {
+              exp_month = exp_month - parseInt(12);
+              exp_year = current_year + parseInt(1);
+            } else {
+              exp_year = current_year;
+            }
+
+            const points = new Points({
+              userId: order.userId._id,
+              orderId: req.params.id,
+              points: parseInt(
+                order.total_price * process.env.USD_POINTS
+              ),
+              exp_day: exp_day,
+              exp_month: exp_month,
+              exp_year: exp_year,
+            });
+            try {
+              await points.save();
+
+              // change level
+              try {
+                let result = [];
+                
+                const all_levels = await Levels.find();
+                const user = await Users.findById(order.userId._id);
+                const new_loyalty_points = user.loyalty_points + parseInt(pending_order.total_price * process.env.USD_POINTS)
+                user.loyalty_points = new_loyalty_points;
+                await user.save();
+                let loyalty_points = new_loyalty_points;
+                let level = user.level;
+
+                if (
+                  parseInt(loyalty_points) >= parseInt(all_levels[4].start_at) &&
+                  (user.level.toString() == all_levels[0]._id.toString() ||
+                    user.level.toString() == all_levels[1]._id.toString() ||
+                    user.level.toString() == all_levels[2]._id.toString() ||
+                    user.level.toString() == all_levels[3]._id.toString())
+                ) {
+                  level = all_levels[4]._id;
+                } else if (
+                  parseInt(loyalty_points) >= parseInt(all_levels[3].start_at) &&
+                  (user.level.toString() == all_levels[0]._id.toString() ||
+                    user.level.toString() == all_levels[1]._id.toString() ||
+                    user.level.toString() == all_levels[2]._id.toString())
+                ) {
+                  level = all_levels[3]._id;
+                } else if (
+                  parseInt(loyalty_points) >= parseInt(all_levels[2].start_at) &&
+                  (user.level.toString() == all_levels[0]._id.toString() ||
+                    user.level.toString() == all_levels[1]._id.toString())
+                ) {
+                  level = all_levels[2]._id;
+                } else if (
+                  parseInt(loyalty_points) >= parseInt(all_levels[1].start_at) &&
+                  user.level.toString() == all_levels[0]._id.toString()
+                ) {
+                  level = all_levels[1]._id;
+                }
+                user.level = level;
+                user.save();
+              } catch (err) {
+                res.status(500).json({ message: err.message });
+              }
+            } catch (err) {
+              res.status(400).json({ message: err.message });
+            }
+
+            try {
+                // notification to user
+                var data = JSON.stringify({
+                    users_id: [order.userId.notification_userId],
+                    title: "B.Hive Orders",
+                    content: "Your order is placed successfully. Thank you!",
+                    subTitle: "",
+                });
+
+                var config = {
+                    method: "post",
+                    url: "https://thebhive.io/api/notifications",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    data: data,
+                };
+
+                axios(config)
+                    .then(function (response) {
+                        console.log(JSON.stringify(response.data));
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            } catch (err) {}
+            try {
+                //notification to manager
+                const manager = await Manager.find({ branch: order.branchId });
+                var data_manager = JSON.stringify({
+                    users_id: [manager[0].notification_managerId],
+                    title: "New Order",
+                    content: "New order placed.",
+                    subTitle: "",
+                });
+
+                var config_manager = {
+                    method: "post",
+                    url: "https://thebhive.io/api/notifications",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    data: data_manager,
+                };
+
+                axios(config_manager)
+                    .then(function (response) {
+                        console.log(JSON.stringify(response.data));
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            } catch (err) {}
+            
             res.json(updatedOrder);
         } catch (err) {
             res.status(400).json({ message: err.message });
