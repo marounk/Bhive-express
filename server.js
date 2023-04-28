@@ -270,7 +270,8 @@ app.post("/check_pending", async (req, res) => {
             pending_order.status = "SUCCESS";
             pending_order.save();
 
-            await Cart.find({ userId: req.body.userId }).remove();
+            const userCountry = await Users.findById(req.body.userId)
+            await Cart.find({ userId: req.body.userId, country: userCountry.country }).remove();
 
             const current_date = new Date();
             const current_day = current_date.getDate();
