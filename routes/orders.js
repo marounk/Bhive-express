@@ -18,7 +18,7 @@ const Merch = require("../models/merchandises");
 const MerchVar = require("../models/variations");
 const AddOns = require("../models/addOns");
 const Manager = require("../models/manager");
-const Levels = require("./models/levels");
+const Levels = require("../models/levels");
 
 const apiKey = "rwzzqd5vfu0dhnutywrj0oocubbasdsxdqxnvxossjesw1b0nj1gswrk4oxbwyzc"; // set your API key here
 const apiSecret = "ubc7ztfkcc9nushbra4oaopgr7tecocmr3wp8fik7q9kgclk7wmja18qpmhowtrp"; // set your secret key here
