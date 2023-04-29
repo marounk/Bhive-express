@@ -13,7 +13,7 @@ const Orders = require("./models/orders");
 const BookedSpaces = require("./models/book");
 const BoughtPoints = require("./models/buyPoints");
 const Cart = require("./models/cart");
-const Levels = require("./models/levels");
+const Levels = require("./models/levels.js");
 
 const axios = require("axios");
 const crypto = require("crypto");
