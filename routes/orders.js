@@ -492,7 +492,7 @@ router.patch("/clover/:id", async (req, res) => {
                 
                 const all_levels = await Levels.find();
                 const user = await Users.findById(order.userId._id);
-                const new_loyalty_points = user.loyalty_points + parseInt(pending_order.total_price * process.env.USD_POINTS)
+                const new_loyalty_points = user.loyalty_points + parseInt(order.total_price * process.env.USD_POINTS)
                 user.loyalty_points = new_loyalty_points;
                 await user.save();
                 let loyalty_points = new_loyalty_points;
