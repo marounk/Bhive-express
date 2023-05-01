@@ -362,18 +362,18 @@ router.get("/check_expiry/:id", async (req, res) => {
 // });
 
 //delete user points
-router.delete("/user-:id", async (req, res) => {
-  try {
-    await Points.find({userId : req.params.id}).remove();
-    const user = await Users.findById(req.params.id)
-    user.loyalty_points = 0;
-    user.level = '63a54ed8ce7bbdb055268731';
-    await user.save()
-    res.json({ message: "Points Deleted" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// router.delete("/user-:id", async (req, res) => {
+//   try {
+//     await Points.find({userId : req.params.id}).remove();
+//     const user = await Users.findById(req.params.id)
+//     user.loyalty_points = 0;
+//     user.level = '63a54ed8ce7bbdb055268731';
+//     await user.save()
+//     res.json({ message: "Points Deleted" });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
 
 //delete generated points
 router.delete("/:id", getPoints, async (req, res) => {
