@@ -12,6 +12,7 @@ const managerTable = new mongoose.Schema({
   branch: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "branches",
+    required: true,
   },
   login_token: {
     type: String,
@@ -19,7 +20,7 @@ const managerTable = new mongoose.Schema({
   },
   notification_managerId: {
     type: String,
-    required: true,
+    required: false,
   },
   active: {
     type: Number,
