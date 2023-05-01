@@ -341,7 +341,7 @@ GET http://localhost:3000/countries
 
 ###
 
-GET http://localhost:3000/branches/6332a0e89cd96e0d9a025da3
+GET http://localhost:3000/branches/6332a4cdfe9b8e512af37e15
 
 ###
 
@@ -774,7 +774,7 @@ POST http://localhost:3000/points/buy
 Content-Type: application/json
 
 {
-    "userId": "636be6ef546989cece303022",
+    "userId": "63cd8b04d419fac1d622eca8",
     "price": 5
 }
 
@@ -1049,9 +1049,9 @@ POST http://localhost:3000/manager
 Content-Type: application/json
 
 {
-    "username": "manager",
-    "password": "jdb&d63nsg",
-    "branch": "6332a9b7b87b0f5f682934e7"
+    "username": "canada_manager",
+    "password": "jrb&d22mce",
+    "branch": "63d96d762be916f511764073"
 }
 
 ###
@@ -1137,8 +1137,8 @@ Content-Type: application/json
 
 {
     "adminId": "63b72367b541ab1e2929f9be",
-    "userId": "636be6ef546989cece303022",
-    "points": 100
+    "userId": "63cd8b04d419fac1d622eca8",
+    "points": 1000
 
 }
 
