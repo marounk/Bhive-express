@@ -8,6 +8,7 @@ const Spaces = require("../models/spaces");
 const Book = require("../models/book");
 const Points = require("../models/points");
 const Users = require("../models/users");
+const Manager = require("../models/manager");
 
 const crypto = require("crypto");
 const axios = require("axios");
@@ -156,7 +157,7 @@ router.post("/book", authenticateToken, async (req, res) => {
             "notification_userId",
             "text",
             "work",
-          ]);
+          ]).populate("space_id");
           let result = [];
           let binance_response = "";
 
@@ -200,6 +201,63 @@ router.post("/book", authenticateToken, async (req, res) => {
             } catch (err) {
               res.status(400).json({ message: err.message });
             }
+
+            try{
+              //send notification
+              var data_succ = JSON.stringify({
+                users_id: [latest.user_id.notification_userId],
+                title: "B.Hive Spaces",
+                content: "Your space is booked successfully. See you soon!",
+                subTitle: "",
+              });
+
+              var config_succ = {
+                method: "post",
+                url: "https://thebhive.io/api/notifications",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                data: data_succ,
+              };
+
+              axios(config_succ)
+                .then(function (response) {
+                  console.log(JSON.stringify(response.data));
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            }
+            catch(err){}
+
+            try {
+              //notification to manager
+              const manager = await Manager.find({ branch: latest.space_id.branch });
+              var data_manager = JSON.stringify({
+                  users_id: [manager[0].notification_managerId],
+                  title: "New Booking",
+                  content: "New space has been booked.",
+                  subTitle: "",
+              });
+
+              var config_manager = {
+                  method: "post",
+                  url: "https://thebhive.io/api/notifications",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  data: data_manager,
+              };
+
+              axios(config_manager)
+                  .then(function (response) {
+                      console.log(JSON.stringify(response.data));
+                  })
+                  .catch(function (error) {
+                      console.log(error);
+                  });
+            } catch (err) {}
+
             //book space send email success
             // try {
             //   // send email
