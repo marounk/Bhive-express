@@ -53,7 +53,7 @@ app.use("/branches", branchesRouter);
 
 const wifiRouter = require("./routes/wifi");
 app.use("/wifi", wifiRouter);
-
+ 
 const menuRouter = require("./routes/menu");
 app.use("/menu", menuRouter);
 
