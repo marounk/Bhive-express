@@ -105,7 +105,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/users/632eb896de538579c2671a97
+DELETE http://localhost:3000/users/644ccae1847845860d12fb12
 
 ###
 
@@ -730,8 +730,8 @@ GET http://localhost:3000/points/bought
 
 ###
 
-GET http://localhost:3000/points/user-640b92ee7b11cf3671a1e57a
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDBiOTJlZTdiMTFjZjM2NzFhMWU1N2EiLCJpYXQiOjE2ODEyMzc4OTl9.6RDIjXuJQLU7iUSSgq7hkYLdwS0pfGhXtA88xOL-QzE
+GET http://localhost:3000/points/user-644f8ec6fa5d67fed9b71976
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDRmOGVjNmZhNWQ2N2ZlZDliNzE5NzYiLCJpYXQiOjE2ODI5MzU1NDJ9.XVAqBOpkDKlPMJw7SXntDrA2tnbgi2296EW35YdfsCg
 
 ###
 
@@ -758,7 +758,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/points/user-6356c24d2338c8f5cf5ee8bc
+DELETE http://localhost:3000/points/user-644f8ec6fa5d67fed9b71976
 
 ###
 
@@ -774,8 +774,8 @@ POST http://localhost:3000/points/buy
 Content-Type: application/json
 
 {
-    "userId": "63cd8b04d419fac1d622eca8",
-    "price": 5
+    "userId": "644f8ec6fa5d67fed9b71976",
+    "price": 1000
 }
 
 ###
@@ -784,7 +784,7 @@ GET http://localhost:3000/points/buy/all
 
 ###
 
-POST http://localhost:3000/points/verifyCode/636be6ef546989cece303022/SctfdzU8PqesijQ
+POST http://localhost:3000/points/verifyCode/644f8ec6fa5d67fed9b71976/HyVfBiWPjNMsvb8
 
 ###
 
@@ -833,9 +833,9 @@ Content-Type: application/json
     "adminId": "63b72367b541ab1e2929f9be",
     "branch": "6332a9b7b87b0f5f682934e7",
     "image": "uploads/6067132762-file-WhatsApp Image 2022-11-09 at 19.03.29.jpeg",
-    "title": "testing notification",
+    "title": "testing event",
     "description": "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
-    "exp_date": "2023-01-01",
+    "exp_date": "2024-01-01",
     "total_seats": "100"
 }
 
@@ -1105,7 +1105,7 @@ Content-Type: application/json
 
 {
     "managerId": "63b9449a81011df3f388f4f1",
-    "price": "1"
+    "price": "1000"
 }
 
 ###
@@ -1137,8 +1137,8 @@ Content-Type: application/json
 
 {
     "adminId": "63b72367b541ab1e2929f9be",
-    "userId": "63cd8b04d419fac1d622eca8",
-    "points": 1000
+    "userId": "644f8ec6fa5d67fed9b71976",
+    "points": 10000
 
 }
 

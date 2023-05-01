@@ -244,20 +244,19 @@ router.post("/verifyCode/:id/:code", getGeneratedPoints, async (req, res) => {
     try {
       const saveAddedPoints = await addPoints.save();
 
-      // change level
+      const all_levels = await Levels.find();
+      const user = await Users.findById(req.params.id);
+      
+      const new_loyalty_points = user.loyalty_points + parseInt(res.points[0].price * process.env.USD_POINTS)
+      user.loyalty_points = new_loyalty_points;
+      await user.save();
+      let loyalty_points = new_loyalty_points;
+
+      let level = user.level;
+      let upgrade_level = false;
+
       try {
-
-        const all_levels = await Levels.find();
-        const user = await Users.findById(req.params.id);
-        
-        const new_loyalty_points = user.loyalty_points + parseInt(res.points[0].price * process.env.USD_POINTS)
-        user.loyalty_points = new_loyalty_points;
-        await user.save();
-        let loyalty_points = new_loyalty_points;
-
-        let level = user.level;
-        let upgrade_level = false;
-
+        // change level
         if (
           parseInt(loyalty_points) >= parseInt(all_levels[4].start_at) &&
           (user.level.toString() == all_levels[0]._id.toString() ||
@@ -363,14 +362,18 @@ router.get("/check_expiry/:id", async (req, res) => {
 // });
 
 //delete user points
-// router.delete("/user-:id", async (req, res) => {
-//   try {
-//     await Points.find({userId : req.params.id}).remove();
-//     res.json({ message: "Points Deleted" });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
+router.delete("/user-:id", async (req, res) => {
+  try {
+    await Points.find({userId : req.params.id}).remove();
+    const user = await Users.findById(req.params.id)
+    user.loyalty_points = 0;
+    user.level = '63a54ed8ce7bbdb055268731';
+    await user.save()
+    res.json({ message: "Points Deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 //delete generated points
 router.delete("/:id", getPoints, async (req, res) => {
