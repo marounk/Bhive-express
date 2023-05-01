@@ -132,16 +132,16 @@ router.get("/user-:id", authenticateToken, async (req, res) => {
       result.push({loyalty: loyalty_points});
       result.push(user_level);
 
-      if(upgrade_level){result.push({message: "new level"});}
+      if(upgrade_level){result.push({message: "new level"}); console.log("here 1")}
       else{
-        const user_level_updated = Users.findById(req.params.id)
+        const user_level_updated = await Users.findById(req.params.id)
         if(user_level_updated.level_updated == "yes"){
           result.push({message: "new level"});
           user_level_updated.level_updated = "no";
           await user_level_updated.save();
         }
       }
-
+      
       res.json(result);
     } catch (err) {
       res.status(500).json({ message: err.message });
@@ -316,7 +316,7 @@ router.post("/verifyCode/:id/:code", getGeneratedPoints, async (req, res) => {
       result.push({loyalty: loyalty_points});
 
       if(upgrade_level){
-        const user_level_updated = Users.findById(req.params.id)
+        const user_level_updated = await Users.findById(req.params.id).select("level_updated");
         user_level_updated.level_updated = "yes";
         await user_level_updated.save();
       }
@@ -374,18 +374,18 @@ router.get("/check_expiry/:id", async (req, res) => {
 // });
 
 //delete user points
-// router.delete("/user-:id", async (req, res) => {
-//   try {
-//     await Points.find({userId : req.params.id}).remove();
-//     const user = await Users.findById(req.params.id)
-//     user.loyalty_points = 0;
-//     user.level = '63a54ed8ce7bbdb055268731';
-//     await user.save()
-//     res.json({ message: "Points Deleted" });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
+router.delete("/user-:id", async (req, res) => {
+  try {
+    await Points.find({userId : req.params.id}).remove();
+    const user = await Users.findById(req.params.id)
+    user.loyalty_points = 0;
+    user.level = '63a54ed8ce7bbdb055268731';
+    await user.save()
+    res.json({ message: "Points Deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 //delete generated points
 router.delete("/:id", getPoints, async (req, res) => {
