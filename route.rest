@@ -784,7 +784,7 @@ GET http://localhost:3000/points/buy/all
 
 ###
 
-POST http://localhost:3000/points/verifyCode/644f8ec6fa5d67fed9b71976/HyVfBiWPjNMsvb8
+POST http://localhost:3000/points/verifyCode/644f8ec6fa5d67fed9b71976/bGZahAR2Euq5UKJ
 
 ###
 
