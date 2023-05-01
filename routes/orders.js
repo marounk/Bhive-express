@@ -497,6 +497,7 @@ router.patch("/clover/:id", async (req, res) => {
                 await user.save();
                 let loyalty_points = new_loyalty_points;
                 let level = user.level;
+                let upgrade_level = false;
 
                 if (
                   parseInt(loyalty_points) >= parseInt(all_levels[4].start_at) &&
@@ -506,6 +507,7 @@ router.patch("/clover/:id", async (req, res) => {
                     user.level.toString() == all_levels[3]._id.toString())
                 ) {
                   level = all_levels[4]._id;
+                  upgrade_level = true;
                 } else if (
                   parseInt(loyalty_points) >= parseInt(all_levels[3].start_at) &&
                   (user.level.toString() == all_levels[0]._id.toString() ||
@@ -513,20 +515,30 @@ router.patch("/clover/:id", async (req, res) => {
                     user.level.toString() == all_levels[2]._id.toString())
                 ) {
                   level = all_levels[3]._id;
+                  upgrade_level = true;
                 } else if (
                   parseInt(loyalty_points) >= parseInt(all_levels[2].start_at) &&
                   (user.level.toString() == all_levels[0]._id.toString() ||
                     user.level.toString() == all_levels[1]._id.toString())
                 ) {
                   level = all_levels[2]._id;
+                  upgrade_level = true;
                 } else if (
                   parseInt(loyalty_points) >= parseInt(all_levels[1].start_at) &&
                   user.level.toString() == all_levels[0]._id.toString()
                 ) {
                   level = all_levels[1]._id;
+                  upgrade_level = true;
                 }
                 user.level = level;
                 user.save();
+
+                if(upgrade_level){
+                    const user_level_updated = Users.findById(order.userId._id)
+                    user_level_updated.level_updated = "yes";
+                    await user_level_updated.save();
+                }
+
               } catch (err) {
                 res.status(500).json({ message: err.message });
               }

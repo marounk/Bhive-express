@@ -133,6 +133,14 @@ router.get("/user-:id", authenticateToken, async (req, res) => {
       result.push(user_level);
 
       if(upgrade_level){result.push({message: "new level"});}
+      else{
+        const user_level_updated = Users.findById(req.params.id)
+        if(user_level_updated.level_updated == "yes"){
+          result.push({message: "new level"});
+          user_level_updated.level_updated = "no";
+          await user_level_updated.save();
+        }
+      }
 
       res.json(result);
     } catch (err) {
@@ -307,7 +315,11 @@ router.post("/verifyCode/:id/:code", getGeneratedPoints, async (req, res) => {
       result.push({redeemable: total_points});
       result.push({loyalty: loyalty_points});
 
-      if(upgrade_level){result.push({message: "new level"});}
+      if(upgrade_level){
+        const user_level_updated = Users.findById(req.params.id)
+        user_level_updated.level_updated = "yes";
+        await user_level_updated.save();
+      }
       
       res.status(201).send(result);
     } catch (err) {

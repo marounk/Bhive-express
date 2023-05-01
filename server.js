@@ -935,7 +935,11 @@ app.post("/check_pending", async (req, res) => {
     result.push({loyalty: loyalty_points});
     result.push({level: user_level});
 
-    if(upgrade_level){result.push({message: "new level"});}
+    if(upgrade_level){
+      const user_level_updated = Users.findById(req.body.userId)
+      user_level_updated.level_updated = "yes";
+      await user_level_updated.save();
+    }
 
     res.json(result);
   } catch (err) {
