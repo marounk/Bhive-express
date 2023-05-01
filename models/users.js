@@ -66,6 +66,10 @@ const usersTable = new mongoose.Schema({
     ref: "levels",
     default: "63a54ed8ce7bbdb055268731",
   },
+  level_updated: {
+    type: String,
+    default: "no",
+  },
   active: {
     type: Number,
     default: 0,
