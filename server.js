@@ -14,6 +14,7 @@ const BookedSpaces = require("./models/book");
 const BoughtPoints = require("./models/buyPoints");
 const Cart = require("./models/cart");
 const Levels = require("./models/levels.js");
+const Manager = require("../models/manager");
 
 const axios = require("axios");
 const crypto = require("crypto");
@@ -480,7 +481,19 @@ app.post("/check_pending", async (req, res) => {
         .then(async (response) => {
           const pending_booking = await BookedSpaces.findById(
             response.data.data.merchantTradeNo
-          );
+          ).populate("user_id", [
+            "customized_userId",
+            "profile",
+            "name",
+            "email",
+            "level",
+            "active",
+            "type",
+            "created_date",
+            "notification_userId",
+            "text",
+            "work",
+          ]).populate("space_id");
           let temp = "";
           if (response.data.data.status == "PAID") {
             pending_booking.status = "SUCCESS";
@@ -575,6 +588,62 @@ app.post("/check_pending", async (req, res) => {
               res.status(400).json({ message: err.message });
             }
 
+            try{
+              //send notification
+              var data_succ = JSON.stringify({
+                users_id: [pending_booking.user_id.notification_userId],
+                title: "B.Hive Spaces",
+                content: "Your space is booked successfully. See you soon!",
+                subTitle: "",
+              });
+
+              var config_succ = {
+                method: "post",
+                url: "https://thebhive.io/api/notifications",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                data: data_succ,
+              };
+
+              axios(config_succ)
+                .then(function (response) {
+                  console.log(JSON.stringify(response.data));
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            }
+            catch(err){}
+
+            try {
+              //notification to manager
+              const manager = await Manager.find({ branch: pending_booking.space_id.branch });
+              var data_manager = JSON.stringify({
+                  users_id: [manager[0].notification_managerId],
+                  title: "New Booking",
+                  content: "New space has been booked.",
+                  subTitle: "",
+              });
+
+              var config_manager = {
+                  method: "post",
+                  url: "https://thebhive.io/api/notifications",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  data: data_manager,
+              };
+
+              axios(config_manager)
+                  .then(function (response) {
+                      console.log(JSON.stringify(response.data));
+                  })
+                  .catch(function (error) {
+                      console.log(error);
+                  });
+            } catch (err) {}
+
             //book space send email success
             // const temp = `<b>Congratulations!</b><br/><br/>Your space has been booked from ${oneBooking.from_date} till ${oneBooking.till_date}`;
             // try {
@@ -600,6 +669,32 @@ app.post("/check_pending", async (req, res) => {
           } else {
             pending_booking.status = "FAIL";
             await pending_booking.save();
+
+            try{
+              var data = JSON.stringify({
+                users_id: [pending_booking.userId.notification_userId],
+                title: "B.Hive Spaces",
+                content: "Oops! Something went wrong in your booking",
+                subTitle: "",
+              });
+
+              var config = {
+                method: "post",
+                url: "https://thebhive.io/api/notifications",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                data: data,
+              };
+
+              axios(config)
+                .then(function (response) {
+                  console.log(JSON.stringify(response.data));
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            } catch(err){}
 
             //book space send email fail
             // const fail_temp = `<b>Oops!</b><br/><br/>Something went wrong in your space booking. Please try again`;
