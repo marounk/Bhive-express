@@ -12,6 +12,7 @@ const orderItemsTable = new mongoose.Schema({
   merchVarId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "variations",
+    required: false,
   },
   menuId: {
     type: mongoose.Schema.Types.ObjectId,
