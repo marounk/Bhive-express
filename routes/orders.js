@@ -185,8 +185,8 @@ router.post("/", authenticateToken, async (req, res) => {
                     }
                 }
                 if (oneItem.merchId) {
-                    // const merchItem = await Merch.findById(oneItem.merchId);
-                    // item_price = parseFloat(merchItem.price);
+                    const merchItem = await Merch.findById(oneItem.merchId);
+                    item_price = parseFloat(merchItem.price);
                     if (oneItem.merchVarId) {
                         const merchVarItem = await MerchVar.findById(oneItem.merchVarId);
                         item_price = parseFloat(merchVarItem.price);
