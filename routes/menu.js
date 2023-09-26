@@ -66,6 +66,7 @@ router.post("/", authenticateToken, async (req, res) => {
       recommended: req.body.recommended,
       contain_milk: req.body.contain_milk,
       order: req.body.order,
+      in_stock: req.body.in_stock,
     });
     try {
       const newItem = await menu.save();
@@ -150,6 +151,9 @@ router.patch("/:id", getMenuItem, async (req, res) => {
         }
         if (req.body.order != null) {
           res.item.order = req.body.order;
+        }
+        if (req.body.in_stock != null) {
+          res.item.in_stock = req.body.in_stock;
         }
         try {
           const updatedItem = await res.item.save();

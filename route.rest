@@ -636,7 +636,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/cart/63c930c9e51f940529e5aa0c
+GET http://localhost:3000/cart/644f8ec6fa5d67fed9b71976
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2M5MzBjOWU1MWY5NDA1MjllNWFhMGMiLCJpYXQiOjE2ODA3MTc2NTZ9.fH0Vq0_U3g27YthpE3Qw8PUxbmYJSbEO44X6_3zwW1o
 
 ###
@@ -656,7 +656,7 @@ DELETE http://localhost:3000/cart/63852db6a9d95eceeea6f197
 
 ###
 
-DELETE http://localhost:3000/cart/clear/636be6ef546989cece303022
+DELETE http://localhost:3000/cart/clear/644f8ec6fa5d67fed9b71976
 
 ###
 
