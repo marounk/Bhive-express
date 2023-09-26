@@ -154,6 +154,11 @@ router.post("/", authenticateToken, async (req, res) => {
                     if (one.stock - item.quantity < 0) {
                         count = 1;
                     }
+                } else if (item.menuId) {
+                    const one = await Menu.findById(item.menuId);
+                    if (!one.in_stock) {
+                        count = 1;
+                    }
                 }
             }
         } catch (err) {
