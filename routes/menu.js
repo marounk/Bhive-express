@@ -7,13 +7,13 @@ const Menu = require("../models/menu");
 const AddOns = require("../models/addOns");
 const MenuVars = require("../models/menuVars");
 
-//Get all items
+//Get all in stock items
 router.get("/all/:id", async (req, res) => {
   let items = [];
   let details = [];
 
   try {
-    const all_items = await Menu.find({ country: req.params.id }).sort({
+    const all_items = await Menu.find({ country: req.params.id, in_stock: true }).sort({
       order: "ascending",
     });
     for (const one of all_items) {
@@ -34,7 +34,7 @@ router.get("/all/:id", async (req, res) => {
   }
 });
 
-//Get all in a country
+//Get all in stock by country
 router.get("/country/:id", getMenuByCountry, async (req, res) => {
   try {
     res.send(res.menu);
@@ -43,7 +43,7 @@ router.get("/country/:id", getMenuByCountry, async (req, res) => {
   }
 });
 
-//Get all in a category
+//Get all in stock by category
 router.get("/category/:id", getMenuByCategory, async (req, res) => {
   try {
     res.send(res.menu);
@@ -108,10 +108,10 @@ router.post("/variation", authenticateToken, async (req, res) => {
   }
 });
 
-//Get all recommended in a country
+//Get all in stock recommended in a country
 router.get("/recommended", async (req, res) => {
   try {
-    const recommended = await Menu.find({ recommended: "yes" });
+    const recommended = await Menu.find({ recommended: "yes", in_stock: true });
     res.json(recommended);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -305,7 +305,7 @@ async function getItemAdds(req, res, next) {
 async function getMenuByCountry(req, res, next) {
   let menu;
   try {
-    menu = await Menu.find({ country: req.params.id });
+    menu = await Menu.find({ country: req.params.id, in_stock: true });
     if (menu == null) {
       return res
         .status(400)
@@ -322,7 +322,7 @@ async function getMenuByCountry(req, res, next) {
 async function getMenuByCategory(req, res, next) {
   let menu;
   try {
-    menu = await Menu.find({ category: req.params.id });
+    menu = await Menu.find({ category: req.params.id, in_stock: true });
     if (menu == null) {
       return res
         .status(400)
