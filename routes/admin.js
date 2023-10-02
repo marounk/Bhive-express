@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const Admins = require("../models/adminUsers");
 const Points = require("../models/points");
 const Users = require("../models/users");
+const Menu = require("../models/menu");
 
 //Get all (keep it commented)
 // router.get("/", async (req, res) => {
@@ -143,6 +144,32 @@ router.patch("/change-status", authenticateToken, async (req, res) => {
     }
   }
 });
+
+//Get all in a country include out of stock
+router.get("/menu/country/:id", getMenuByCountry, async (req, res) => {
+  try {
+    res.send(res.menu);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+async function getMenuByCountry(req, res, next) {
+  let menu;
+  try {
+    menu = await Menu.find({ country: req.params.id });
+    if (menu == null) {
+      return res
+        .status(400)
+        .json({ message: "No menu available in this country" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+
+  res.menu = menu;
+  next();
+}
 
 async function getAdmin(req, res, next) {
   let admin;
