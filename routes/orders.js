@@ -19,6 +19,7 @@ const MerchVar = require("../models/variations");
 const AddOns = require("../models/addOns");
 const Manager = require("../models/manager");
 const Levels = require("../models/levels");
+const merchandises = require("../models/merchandises");
 
 const apiKey = "rwzzqd5vfu0dhnutywrj0oocubbasdsxdqxnvxossjesw1b0nj1gswrk4oxbwyzc"; // set your API key here
 const apiSecret = "ubc7ztfkcc9nushbra4oaopgr7tecocmr3wp8fik7q9kgclk7wmja18qpmhowtrp"; // set your secret key here
@@ -156,7 +157,13 @@ router.post("/", authenticateToken, async (req, res) => {
                     }
                 } else if (item.menuId) {
                     const one = await Menu.findById(item.menuId);
-                    if (!one.in_stock) {
+                    if (one.in_stock == "false") {
+                        count = 1;
+                    }
+                }
+                else if (item.merchId) {
+                    const one = await Merch.findById(item.merchId);
+                    if (one.in_stock == "false") {
                         count = 1;
                     }
                 }

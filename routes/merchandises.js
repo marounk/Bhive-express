@@ -26,7 +26,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-//Get all merchs by country
+//Get all in_stock merchs by country
 router.get("/country/:country", getMerchsByCountry, async (req, res) => {
   let items = [];
   try {
@@ -67,6 +67,7 @@ router.post("/", authenticateToken, async (req, res) => {
       price: req.body.price,
       recommended: req.body.recommended,
       order: req.body.order,
+      in_stock: req.body.in_stock,
     });
     try {
       const newMerch = await merch.save();
@@ -121,6 +122,19 @@ router.get("/:id", getMerchsVars, (req, res) => {
   res.send(res.details);
 });
 
+//Update merch test add in_stock
+// router.patch("/testing", async (req, res) => {
+   
+//   const all_items = await Merchandises.find();
+//   for(const one of all_items){
+//     one.in_stock = "true";
+//     await one.save();
+//   }
+//   const new_all_items = await Merchandises.find();
+//     res.json(new_all_items);
+
+// });
+
 //Update merch
 router.patch("/:id", getMerchs, async (req, res) => {
   const authHeader = req.headers["authorization"];
@@ -154,6 +168,9 @@ router.patch("/:id", getMerchs, async (req, res) => {
         }
         if (req.body.order != null) {
           res.merch.order = req.body.order;
+        }
+        if (req.body.in_stock != null) {
+          res.merch.in_stock = req.body.in_stock;
         }
         try {
           const updatedMerch = await res.merch.save();
@@ -306,7 +323,7 @@ async function getMerchs(req, res, next) {
 async function getMerchsByCountry(req, res, next) {
   let merch;
   try {
-    merch = await Merchandises.find({ country: req.params.country }).sort({
+    merch = await Merchandises.find({ country: req.params.country, in_stock: "true" }).sort({
       order: "ascending",
     });
     if (merch == null) {

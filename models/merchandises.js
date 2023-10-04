@@ -33,6 +33,10 @@ const merchandisesTable = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  in_stock: {
+    type: String,
+    required: false,
+  },
   created_date: {
     type: Date,
     required: true,

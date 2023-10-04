@@ -34,8 +34,8 @@ const menuTable = new mongoose.Schema({
     required: true,
   },
   in_stock: {
-    type: Boolean,
-    default: true,
+    type: String,
+    required: false,
   },
   created_date: {
     type: Date,
