@@ -8,6 +8,8 @@ const Admins = require("../models/adminUsers");
 const Points = require("../models/points");
 const Users = require("../models/users");
 const Menu = require("../models/menu");
+const Merchandises = require("../models/merchandises");
+const Variations = require("../models/variations");
 
 //Get all (keep it commented)
 // router.get("/", async (req, res) => {
@@ -145,10 +147,27 @@ router.patch("/change-status", authenticateToken, async (req, res) => {
   }
 });
 
-//Get all in a country include out of stock
+//Get all menu in a country include out of stock
 router.get("/menu/country/:id", getMenuByCountry, async (req, res) => {
   try {
     res.send(res.menu);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+//Get all merchs in a country include out of stock
+router.get("/merchandises/country/:country", getMerchsByCountry, async (req, res) => {
+  let items = [];
+  try {
+    for (const one of res.merch) {
+      let one_item = [];
+      const vars = await Variations.find({ merchandises: one._id });
+      one_item.push(one);
+      one_item.push(vars);
+      items.push(one_item);
+    }
+    res.json(items);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -168,6 +187,25 @@ async function getMenuByCountry(req, res, next) {
   }
 
   res.menu = menu;
+  next();
+}
+
+async function getMerchsByCountry(req, res, next) {
+  let merch;
+  try {
+    merch = await Merchandises.find({ country: req.params.country, in_stock: "true" }).sort({
+      order: "ascending",
+    });
+    if (merch == null) {
+      return res
+        .status(400)
+        .json({ message: "No merchandises available in this country" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+
+  res.merch = merch;
   next();
 }
 
