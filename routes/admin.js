@@ -7,7 +7,11 @@ const jwt = require("jsonwebtoken");
 const Admins = require("../models/adminUsers");
 const Points = require("../models/points");
 const Users = require("../models/users");
+
 const Menu = require("../models/menu");
+const AddOns = require("../models/addOns");
+const MenuVars = require("../models/menuVars");
+
 const Merchandises = require("../models/merchandises");
 const Variations = require("../models/variations");
 
@@ -144,6 +148,33 @@ router.patch("/change-status", authenticateToken, async (req, res) => {
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
+  }
+});
+
+// get all menu
+router.get("/menu/all/:id", async (req, res) => {
+  let items = [];
+  let details = [];
+
+  try {
+    const all_items = await Menu.find({ country: req.params.id }).sort({
+      order: "ascending",
+    });
+    for (const one of all_items) {
+      let one_item = [];
+      vars = await MenuVars.find({ itemId: one._id });
+      one_item.push(one);
+      one_item.push(vars);
+      items.push(one_item);
+    }
+    details.push(items);
+    const addons = await AddOns.find({ country: req.params.id });
+    if (addons != null) {
+      details.push(addons);
+    }
+    res.json(details);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
