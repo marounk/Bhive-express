@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
- 
+  
 const addOnsTable = new mongoose.Schema({
   country: {
     type: String,
