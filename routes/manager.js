@@ -13,6 +13,8 @@ const GeneratedPoints = require("../models/generatedPoints");
 const Spaces = require("../models/spaces");
 const BookedSpaces = require("../models/book");
 const EventBooking = require("../models/eventBooking");
+const Merchandises = require("../models/merchandises");
+const Menu = require("../models/menu");
 
 //Get all (keep it commented)
 // router.get("/", async (req, res) => {
@@ -330,6 +332,102 @@ router.post("/booked/:id", authenticateToken, async (req, res) => {
     }
   }
 });
+
+//Update item
+router.patch("/menu/:id", getMenuItem, async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, authData) => {
+    if (err) {
+      return res.sendStatus(403);
+    } else {
+      if (authData.managerId !== req.body.managerId) {
+        res.status(400).json({ message: "token error" });
+      } else {
+        if (req.body.in_stock != null) {
+          res.item.in_stock = req.body.in_stock;
+        }
+        try {
+          const updatedItem = await res.item.save();
+          const update_file = fetch(
+            "https://backend.thebhive.io/menu/lebanon/products.php"
+          );
+          const update_file2 = fetch(
+            "https://backend.thebhive.io/menu/canada/products.php"
+          );
+          res.json(updatedItem);
+        } catch (err) {
+          res.status(400).json({ message: err.message });
+        }
+      }
+    }
+  });
+});
+
+//Update merch
+router.patch("/merchandises/:id", getMerchs, async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, authData) => {
+    if (err) {
+      return res.sendStatus(403);
+    } else {
+      if (authData.managerId !== req.body.managerId) {
+        res.status(400).json({ message: "token error" });
+      } else {
+        if (req.body.in_stock != null) {
+          res.merch.in_stock = req.body.in_stock;
+        }
+        try {
+          const updatedMerch = await res.merch.save();
+          const update_file = fetch(
+            "https://backend.thebhive.io/menu/lebanon/products.php"
+          );
+          const update_file2 = fetch(
+            "https://backend.thebhive.io/menu/canada/products.php"
+          );
+          res.json(updatedMerch);
+        } catch (err) {
+          res.status(400).json({ message: err.message });
+        }
+      }
+    }
+  });
+});
+
+async function getMenuItem(req, res, next) {
+  let item;
+  try {
+    item = await Menu.findById(req.params.id);
+    if (item == null) {
+      return res.status(400).json({ message: "Item not found" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+
+  res.item = item;
+  next();
+}
+
+async function getMerchs(req, res, next) {
+  let merch;
+  try {
+    merch = await Merchandises.findById(req.params.id);
+    if (merch == null) {
+      return res.status(400).json({ message: "Merchandise not found" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+
+  res.merch = merch;
+  next();
+}
 
 async function getManager(req, res, next) {
   let manager;
