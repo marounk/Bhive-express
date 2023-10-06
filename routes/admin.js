@@ -224,7 +224,7 @@ async function getMenuByCountry(req, res, next) {
 async function getMerchsByCountry(req, res, next) {
   let merch;
   try {
-    merch = await Merchandises.find({ country: req.params.country, in_stock: "true" }).sort({
+    merch = await Merchandises.find({ country: req.params.country }).sort({
       order: "ascending",
     });
     if (merch == null) {
