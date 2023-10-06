@@ -480,7 +480,7 @@ GET http://localhost:3000/menu/638766716c0bf952dec58fdd
 
 ###
 
-GET http://localhost:3000/menu/country/6332a0e89cd96e0d9a025da3
+GET http://localhost:3000/admin/menu/country/6332a0e89cd96e0d9a025da3
 
 ###
 
@@ -1127,6 +1127,17 @@ Content-Type: application/json
 
 {
     "managerId": "63b9449a81011df3f388f4f1"
+}
+
+###
+
+PATCH http://localhost:3000/manager/menu/63c45127f62fac16f715b4cc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
+Content-Type: application/json
+
+{
+    "managerId": "63b9449a81011df3f388f4f1",
+    "in_stock": "true" 
 }
 
 ###
