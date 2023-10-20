@@ -1137,7 +1137,7 @@ Content-Type: application/json
 
 {
     "managerId": "63b9449a81011df3f388f4f1",
-    "in_stock": "true" 
+    "in_stock": "false" 
 }
 
 ###

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
- 
+
 const adminUsersTable = new mongoose.Schema({
   username: {
     type: String,

@@ -7,13 +7,13 @@ const Menu = require("../models/menu");
 const AddOns = require("../models/addOns");
 const MenuVars = require("../models/menuVars");
 
-//Get all in_stock items
+//Get all items in and out of stock
 router.get("/all/:id", async (req, res) => {
   let items = [];
   let details = [];
 
   try {
-    const all_items = await Menu.find({ country: req.params.id, in_stock: "true" }).sort({
+    const all_items = await Menu.find({ country: req.params.id }).sort({
       order: "ascending",
     });
     for (const one of all_items) {
@@ -34,7 +34,7 @@ router.get("/all/:id", async (req, res) => {
   }
 });
 
-//Get all in_stock by country
+//Get all by country in and out of stock
 router.get("/country/:id", getMenuByCountry, async (req, res) => {
   try {
     res.send(res.menu);
@@ -43,7 +43,7 @@ router.get("/country/:id", getMenuByCountry, async (req, res) => {
   }
 });
 
-//Get all in_stock by category
+//Get all by category in and out of stock
 router.get("/category/:id", getMenuByCategory, async (req, res) => {
   try {
     res.send(res.menu);
@@ -119,17 +119,17 @@ router.get("/recommended", async (req, res) => {
 });
 
 //Update item test add in_stock
-// router.patch("/testing", async (req, res) => {
+router.patch("/testing", async (req, res) => {
    
-//   const all_items = await Menu.find();
-//   for(const one of all_items){
-//     one.in_stock = "true";
-//     await one.save();
-//   }
-//   const new_all_items = await Menu.find();
-//     res.json(new_all_items);
+  const all_items = await Menu.find();
+  for(const one of all_items){
+    one.in_stock = "true";
+    await one.save();
+  }
+  const new_all_items = await Menu.find();
+    res.json(new_all_items);
 
-// });
+});
 
 //Update item
 router.patch("/:id", getMenuItem, async (req, res) => {
@@ -318,7 +318,7 @@ async function getItemAdds(req, res, next) {
 async function getMenuByCountry(req, res, next) {
   let menu;
   try {
-    menu = await Menu.find({ country: req.params.id, in_stock: "true"});
+    menu = await Menu.find({ country: req.params.id});
     if (menu == null) {
       return res
         .status(400)
@@ -335,7 +335,7 @@ async function getMenuByCountry(req, res, next) {
 async function getMenuByCategory(req, res, next) {
   let menu;
   try {
-    menu = await Menu.find({ category: req.params.id, in_stock: "true" });
+    menu = await Menu.find({ category: req.params.id});
     if (menu == null) {
       return res
         .status(400)
