@@ -162,6 +162,49 @@ router.post("/orders", async (req, res) => {
   });
 });
 
+
+router.post("/test-orders", async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, authData) => {
+    if (err) {
+      return res.sendStatus(403);
+    } else {
+      if (authData.managerId !== req.body.managerId) {
+        res.status(400).json({ message: "token error" });
+      } else {
+        try {
+          const manager = await Manager.findById(req.body.managerId);
+          const managerBranch = manager.branch;
+          const all_orders = await Orders.find({
+            branchId: managerBranch,
+          }).sort({
+            created_date: -1,
+          });
+
+          let allOrdersDetails = [];
+          for (const one of all_orders) {
+            let orderDetails = [];
+            const items = await OrderItems.find({
+              orderId: one._id,
+            }).populate("merchId merchVarId menuId menuVarId milk addOns");
+            orderDetails.push(one);
+            orderDetails.push(items);
+            allOrdersDetails.push(orderDetails);
+          }
+          res.send(allOrdersDetails);
+        } catch (err) {
+          res.status(500).json({ message: err.message });
+        }
+      }
+    }
+  });
+});
+
+
+
 //Confirm order steps
 router.patch("/confirm-:id", authenticateToken, async (req, res) => {
   if (res.authData.managerId !== req.body.managerId) {
