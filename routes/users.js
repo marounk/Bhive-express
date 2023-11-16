@@ -408,6 +408,9 @@ router.patch("/:id", getUsers, async (req, res) => {
                 if (req.body.text != null) {
                     res.user.text = req.body.text;
                 }
+                if (req.body.notification_userId != null) {
+                    res.user.notification_userId = req.body.notification_userId;
+                }
                 try {
                     const updatedUser = await res.user.save();
                     res.json(updatedUser);
