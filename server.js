@@ -96,6 +96,9 @@ app.use("/notification", notification);
 const terms = require("./routes/terms");
 app.use("/terms", terms);
 
+const test = require("./routes/test");
+app.use("/test", test);
+
 //App version
 app.post("/version", async (req, res) => {
   let result = [];

@@ -1170,3 +1170,20 @@ Content-Type: application/json
 
 GET http://localhost:3000/terms/lebanon
 
+###
+
+GET http://localhost:3000/test
+
+###
+
+POST http://localhost:3000/test
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzY4MTc1NjN9.xY2Nc-NDRGnwxeO6qNetXZSQNZb3lxI7NJSgJZfmZiU
+Content-Type: application/json
+
+{
+   "user_id": "636be6ef546989cece303022"
+}
+
+###
+
+DELETE http://localhost:3000/test/clear-records
