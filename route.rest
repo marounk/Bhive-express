@@ -1131,7 +1131,7 @@ Content-Type: application/json
 
 ###
 
-PATCH http://localhost:3000/manager/menu/63c45127f62fac16f715b4cc
+PATCH http://localhost:3000/manager/menu/64ed3319c61039dd7a710f5e
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
 Content-Type: application/json
 
