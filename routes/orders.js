@@ -298,7 +298,7 @@ router.post("/", authenticateToken, async (req, res) => {
                             mybinance_response = response.data;
                         })
                         .catch((error) => console.log(error));
-                } else if (req.body.pay_with == "points") {
+                } else if (req.body.pay_with == "points" && req.body.countryId != "6332a4cdfe9b8e512af37e15") {
                     try {
                         let pointsToRemove = parseInt(total_price * process.env.POINTS_USD);
 
@@ -454,6 +454,7 @@ router.patch("/clover/:id", async (req, res) => {
 
           try {
             order.status = "SUCCESS";
+            order.cloverOrderId = req.body.cloverOrderId;
             const updatedOrder = await order.save();
             await Cart.find({ userId: order.userId._id, country: order.userId.country }).remove();
 
@@ -667,6 +668,7 @@ async function getOrderDetails(req, res, next) {
             "notification_userId",
             "text",
             "work",
+            "cloverId"
         ]);
         if (info == null) {
             return res.status(400).json({ message: "Order not found" });

@@ -6,7 +6,6 @@ Content-Type: application/json
 }
 
 ###
-
 GET http://localhost:3000/admin
 
 ###
@@ -664,7 +663,7 @@ GET http://localhost:3000/orders
 
 ###
 
-GET http://localhost:3000/orders/64ba4e47fefdfee4cda22933
+GET http://localhost:3000/orders/665d8f2a3abe8470c55db56b
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2FmZjJhYWM2NWMwZDc4ZDcxMDZhZjQiLCJpYXQiOjE2NzI4NTkwNTl9.xnzjTSyEaO-hEu8V3rgBQvScF8LDRnHxYDhdnVxyEuc
 
 ###
@@ -1050,7 +1049,7 @@ Content-Type: application/json
 
 {
     "username": "canada_manager",
-    "password": "jrb&d22mce",
+    "password": "123",
     "branch": "63d96d762be916f511764073"
 }
 
@@ -1073,7 +1072,7 @@ Content-Type: application/json
 
 {
     "managerId": "63b9449a81011df3f388f4f1",
-    "date": "2023-01-07" 
+    "date": "2023-01-07"
 }
 
 ###
@@ -1131,7 +1130,7 @@ Content-Type: application/json
 
 ###
 
-PATCH http://localhost:3000/manager/menu/64ed3319c61039dd7a710f5e
+PATCH http://localhost:3000/manager/menu/63c45127f62fac16f715b4cc
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
 Content-Type: application/json
 

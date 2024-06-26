@@ -21,7 +21,8 @@
     "mongoose": "^6.6.1",
     "nodemailer": "^6.8.0",
     "onesignal-node": "^3.4.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "vercel": "^34.2.8"
   },
   "devDependencies": {
     "dotenv": "^16.0.2",

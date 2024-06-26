@@ -162,48 +162,75 @@ router.post("/orders", async (req, res) => {
   });
 });
 
-
-router.post("/test-orders", async (req, res) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (token == null) return res.sendStatus(401);
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, authData) => {
-    if (err) {
-      return res.sendStatus(403);
-    } else {
-      if (authData.managerId !== req.body.managerId) {
-        res.status(400).json({ message: "token error" });
-      } else {
-        try {
-          const manager = await Manager.findById(req.body.managerId);
-          const managerBranch = manager.branch;
-          const all_orders = await Orders.find({
-            branchId: managerBranch,
-          }).sort({
-            created_date: -1,
-          });
-
-          let allOrdersDetails = [];
-          for (const one of all_orders) {
-            let orderDetails = [];
-            const items = await OrderItems.find({
-              orderId: one._id,
-            }).populate("merchId merchVarId menuId menuVarId milk addOns");
-            orderDetails.push(one);
-            orderDetails.push(items);
-            allOrdersDetails.push(orderDetails);
-          }
-          res.send(allOrdersDetails);
-        } catch (err) {
-          res.status(500).json({ message: err.message });
-        }
+//remove item from order
+router.patch("/orders/:orderId/remove/:OrderItemId", authenticateToken, async (req, res) => {
+  if (res.authData.managerId !== req.body.managerId) {
+    res.status(400).json({ message: "token error" });
+  } else {
+    //add stock and delete item
+    const orderId = req.params.orderId;
+    const orderItemId = req.params.OrderItemId;
+    try {
+      const OrderItem = await OrderItem.findById(orderItemId);
+      if (OrderItem.merchVarId) {
+          const one = await Variations.findById(OrderItem.merchVarId);
+          one.stock = one.stock + OrderItem.quantity;
+          await one.save();
       }
+      await OrderItems.findByIdAndDelete(orderItemId);
+      const remainingItems = await OrderItems.find({ orderId: orderId });
+
+      // Recalculate total
+      let total_price = 0;
+      for (const oneItem of remainingItems) {
+        let item_price = 0;
+        if (oneItem.menuId) {
+            const menuItem = await Menu.findById(oneItem.menuId);
+            item_price = parseFloat(menuItem.price);
+            if (oneItem.menuVarId) {
+                const menuVarItem = await MenuVar.findById(oneItem.menuVarId);
+                item_price = item_price + parseFloat(menuVarItem.price);
+            }
+            if (oneItem.milk) {
+                const milkItem = await AddOns.findById(oneItem.milk);
+                item_price = item_price + parseFloat(milkItem.price);
+            }
+            if (oneItem.addOns) {
+                for (const oneAddOn of oneItem.addOns) {
+                    const addOnItem = await AddOns.findById(oneAddOn);
+                    item_price = item_price + parseFloat(addOnItem.price);
+                }
+            }
+        }
+        if (oneItem.merchId) {
+            const merchItem = await Merch.findById(oneItem.merchId);
+            item_price = parseFloat(merchItem.price);
+            if (oneItem.merchVarId) {
+                const merchVarItem = await MerchVar.findById(oneItem.merchVarId);
+                item_price = parseFloat(merchVarItem.price);
+            }
+        }
+        if (oneItem.wifi == "yes") {
+            item_price = parseFloat(process.env.WIFI_PRICE);
+        }
+        total_price = total_price + parseFloat(item_price) * parseFloat(oneItem.quantity);
+      }
+
+      const nft_user = await Users.findById(orderId.userId);
+      if (nft_user.type == "nft") {
+          total_price = total_price * 0.8;
+      }
+
+      const order = await Orders.findById(orderId);
+      order.total_price = total_price;
+      await order.save();
+
+      res.status(200).json({ message: "Order Items updated successfully" });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-  });
+  }
 });
-
-
 
 //Confirm order steps
 router.patch("/confirm-:id", authenticateToken, async (req, res) => {
@@ -230,6 +257,91 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
       let content_sent = "";
       if (status === "confirm") {
         content_sent = "Your order has bee-n confirmed";
+
+        //points logic for canada users
+        if (order.pay_with == "points" && order.countryId == "6332a4cdfe9b8e512af37e15") {
+          try {
+              let pointsToRemove = parseInt(order.total_price * process.env.POINTS_USD);
+
+              do {
+                  const orderPoints = await Points.find({
+                      userId: order.userId,
+                  }).limit(1);
+
+                  if (orderPoints[0].points - pointsToRemove > 0) {
+                      orderPoints[0].points = orderPoints[0].points - pointsToRemove;
+                      await orderPoints[0].save();
+                      pointsToRemove = 0;
+                  } else {
+                      pointsToRemove = pointsToRemove - orderPoints[0].points;
+                      await orderPoints[0].remove();
+                  }
+              } while (pointsToRemove > 0);
+
+              order.status = "SUCCESS";
+              await order.save();
+
+              const userCountry = await Users.findById(order.userId)
+              await Cart.find({ userId: order.userId, country: userCountry.country }).remove();
+
+              try {
+                  // notification to user
+                  var data = JSON.stringify({
+                      users_id: [order.userId.notification_userId],
+                      title: "B.Hive Orders",
+                      content: "Your order is placed successfully. Thank you!",
+                      subTitle: "",
+                  });
+
+                  var config = {
+                      method: "post",
+                      url: "https://thebhive.io/api/notifications",
+                      headers: {
+                          "Content-Type": "application/json",
+                      },
+                      data: data,
+                  };
+
+                  axios(config)
+                      .then(function (response) {
+                          console.log(JSON.stringify(response.data));
+                      })
+                      .catch(function (error) {
+                          console.log(error);
+                      });
+              } catch (err) {}
+
+              try {
+                  //notification to manager
+                  const manager = await Manager.find({ branch: order.branchId });
+                  var data_manager = JSON.stringify({
+                      users_id: [manager[0].notification_managerId],
+                      title: "New Order",
+                      content: "New order placed.",
+                      subTitle: "",
+                  });
+
+                  var config_manager = {
+                      method: "post",
+                      url: "https://thebhive.io/api/notifications",
+                      headers: {
+                          "Content-Type": "application/json",
+                      },
+                      data: data_manager,
+                  };
+
+                  axios(config_manager)
+                      .then(function (response) {
+                          console.log(JSON.stringify(response.data));
+                      })
+                      .catch(function (error) {
+                          console.log(error);
+                      });
+              } catch (err) {}
+          } catch (err) {
+              res.status(400).json({ message: err.message });
+          }
+        }
       } else if (status === "preparing") {
         content_sent = "Your order is bee-ing prepared";
       } else if (status === "delivered") {
@@ -500,7 +612,7 @@ async function getOrdersByDate(req, res, next) {
     all_orders = await Orders.find({
       branchId: managerBranch,
       status: "SUCCESS",
-    }).populate("userId", ["name", "email", "type"]);
+    }).populate("userId", ["name", "email", "type", "cloverId"]);
     if (all_orders == null) {
       return res.status(400).json({ message: "No orders available" });
     } else {
