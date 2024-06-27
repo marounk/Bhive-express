@@ -8,6 +8,7 @@ const axios = require("axios");
 
 const Manager = require("../models/manager");
 const Orders = require("../models/orders");
+const AddOns = require("../models/addOns");
 const OrderItems = require("../models/orderItems");
 const GeneratedPoints = require("../models/generatedPoints");
 const Spaces = require("../models/spaces");
