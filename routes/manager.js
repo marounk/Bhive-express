@@ -8,7 +8,11 @@ const axios = require("axios");
 
 const Manager = require("../models/manager");
 const Orders = require("../models/orders");
+
 const AddOns = require("../models/addOns");
+const MerchVar = require("../models/variations");
+const Users = require("../models/users");
+
 const OrderItems = require("../models/orderItems");
 const GeneratedPoints = require("../models/generatedPoints");
 const Spaces = require("../models/spaces");
@@ -172,7 +176,7 @@ router.patch("/orders/:orderId/remove/:OrderItemId", authenticateToken, async (r
     const orderId = req.params.orderId;
     const orderItemId = req.params.OrderItemId;
     try {
-      const OrderItem = await OrderItem.findById(orderItemId);
+      const OrderItem = await OrderItems.findById(orderItemId);
       if (OrderItem.merchVarId) {
           const one = await Variations.findById(OrderItem.merchVarId);
           one.stock = one.stock + OrderItem.quantity;
@@ -217,7 +221,12 @@ router.patch("/orders/:orderId/remove/:OrderItemId", authenticateToken, async (r
         total_price = total_price + parseFloat(item_price) * parseFloat(oneItem.quantity);
       }
 
-      const nft_user = await Users.findById(orderId.userId);
+      const orderUsr = await Orders.findById(orderId);
+      if (!orderUsr) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      const nft_user = await Users.findById(orderUsr.userId);
       if (nft_user.type == "nft") {
           total_price = total_price * 0.8;
       }
