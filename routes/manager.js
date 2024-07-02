@@ -182,10 +182,16 @@ router.patch("/orders/:orderId/remove/:OrderItemId", authenticateToken, async (r
           one.stock = one.stock + OrderItem.quantity;
           await one.save();
       }
-      await OrderItems.findByIdAndDelete(orderItemId);
-      const remainingItems = await OrderItems.find({ orderId: orderId });
+
+      if (OrderItem.quantity == 1) {
+        await OrderItems.findByIdAndDelete(orderItemId);
+      } else{
+        OrderItem.quantity--
+        OrderItem.save();
+      }
 
       // Recalculate total
+      const remainingItems = await OrderItems.find({ orderId: orderId });
       let total_price = 0;
       for (const oneItem of remainingItems) {
         let item_price = 0;
