@@ -16,7 +16,6 @@ const AddOns = require("../models/addOns");
 //   }
 // });
 
-
 //Get addOns by country
 router.get("/country-:id", getCountryAddOns, async (req, res) => {
   try {
