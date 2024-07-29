@@ -454,7 +454,6 @@ router.patch("/clover/:id", async (req, res) => {
 
           try {
             order.status = "SUCCESS";
-            order.cloverOrderId = req.body.cloverOrderId;
             const updatedOrder = await order.save();
             await Cart.find({ userId: order.userId._id, country: order.userId.country }).remove();
 
@@ -668,7 +667,6 @@ async function getOrderDetails(req, res, next) {
             "notification_userId",
             "text",
             "work",
-            "cloverId"
         ]);
         if (info == null) {
             return res.status(400).json({ message: "Order not found" });

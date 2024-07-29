@@ -8,28 +8,26 @@ const axios = require("axios");
 
 const Manager = require("../models/manager");
 const Orders = require("../models/orders");
-
-const AddOns = require("../models/addOns");
-const MerchVar = require("../models/variations");
-const Users = require("../models/users");
-
 const OrderItems = require("../models/orderItems");
 const GeneratedPoints = require("../models/generatedPoints");
 const Spaces = require("../models/spaces");
 const BookedSpaces = require("../models/book");
 const EventBooking = require("../models/eventBooking");
 const Merchandises = require("../models/merchandises");
+const AddOns = require("../models/addOns");
+const MerchVar = require("../models/variations");
+const Users = require("../models/users");
 const Menu = require("../models/menu");
 
 //Get all (keep it commented)
-// router.get("/", async (req, res) => {
-//   try {
-//     const managers = await Manager.find();
-//     res.json(managers);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
+router.get("/", async (req, res) => {
+  try {
+    const managers = await Manager.find();
+    res.json(managers);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 //Register new manager (keep it commented)
 // router.post("/", async (req, res) => {
@@ -57,8 +55,22 @@ const Menu = require("../models/menu");
 //   }
 // });
 
-// login
+//update manager(keep it commented)
+// router.put("/:id", async (req, res) => {
+//   const { id } = req.params;
+//   const { username, password } = req.body;
+//   try {
+//     const manager = await Manager.findById(id);
+//     manager.username = username;
+//     manager.password = md5(password);
+//     const updatedManager = await manager.save();
+//     res.json(updatedManager);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
 
+// login
 router.post("/login", async (req, res) => {
   const username = req.body.username;
   const password = md5(req.body.password);
@@ -627,8 +639,12 @@ async function getOrdersByDate(req, res, next) {
   try {
     all_orders = await Orders.find({
       branchId: managerBranch,
-      status: "SUCCESS",
-    }).populate("userId", ["name", "email", "type", "cloverId"]);
+      $or: [
+        { status: "SUCCESS" },
+        { pay_with: "points" }
+      ]
+    }).populate("userId", ["name", "email", "type"]);
+
     if (all_orders == null) {
       return res.status(400).json({ message: "No orders available" });
     } else {

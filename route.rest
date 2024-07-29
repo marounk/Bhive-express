@@ -6,6 +6,7 @@ Content-Type: application/json
 }
 
 ###
+
 GET http://localhost:3000/admin
 
 ###
@@ -663,7 +664,7 @@ GET http://localhost:3000/orders
 
 ###
 
-GET http://localhost:3000/orders/665d8f2a3abe8470c55db56b
+GET http://localhost:3000/orders/6686bc901784cfaf67b885ad
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2FmZjJhYWM2NWMwZDc4ZDcxMDZhZjQiLCJpYXQiOjE2NzI4NTkwNTl9.xnzjTSyEaO-hEu8V3rgBQvScF8LDRnHxYDhdnVxyEuc
 
 ###
@@ -1049,8 +1050,18 @@ Content-Type: application/json
 
 {
     "username": "canada_manager",
-    "password": "123",
+    "password": "jrb&d22mce",
     "branch": "63d96d762be916f511764073"
+}
+
+###
+
+PUT http://localhost:3000/manager/644d6800bc4d4518ba3219b4
+Content-Type: application/json
+
+{
+    "username": "canada",
+    "password": "bhiveca2023"
 }
 
 ###
@@ -1059,32 +1070,43 @@ POST http://localhost:3000/manager/login
 Content-Type: application/json
 
 {
-    "username": "manager",
-    "password": "jdb&d63nsg",
-    "notification_managerId": "05a4f36c-9eb9-4a10-abf9-00a3326c2cf6"
+    "username": "canada",
+    "password": "bhiveca2023",
+    "notification_managerId": "aaa977cf-16a0-439b-9484-7dccb4cb5d0d"
 }
 
 ###
 
 POST http://localhost:3000/manager/orders
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2NDRkNjgwMGJjNGQ0NTE4YmEzMjE5YjQiLCJpYXQiOjE3MTk0OTkwOTR9.NYoJja68UV2h6g-3nWVaMHZnIoGv3htltDQTScn1z3Q
 Content-Type: application/json
 
 {
-    "managerId": "63b9449a81011df3f388f4f1",
-    "date": "2023-01-07"
+    "managerId": "644d6800bc4d4518ba3219b4",
+    "date": "2023-01-07" 
 }
 
 ###
 
 POST http://localhost:3000/manager/orders_by_date
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2M2I5NDQ5YTgxMDExZGYzZjM4OGY0ZjEiLCJpYXQiOjE2NzMwODY3MDV9.ihwAeGHEahkH6v0lkAHYbx4ZV3mg-oczlVRpnckfVcY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2NDRkNjgwMGJjNGQ0NTE4YmEzMjE5YjQiLCJpYXQiOjE3MjIyNjExMTZ9.cTUV_1Oe5PIJfIUFW1ixFiGLHxLBDPHZv1EEk3nMjB8
 Content-Type: application/json
 
 {
-    "managerId": "63b9449a81011df3f388f4f1",
-    "date": "2023-01-14" 
+    "managerId": "644d6800bc4d4518ba3219b4",
+    "date": "2024-07-29"
 }
+
+###
+
+PATCH  http://localhost:3000/manager/orders/6686bc901784cfaf67b885ad/remove/6686bc901784cfaf67b885b0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2NDRkNjgwMGJjNGQ0NTE4YmEzMjE5YjQiLCJpYXQiOjE3MjAxMjQzNTN9.-lMeFNw0V3glrSo-eEMRdLZonql1eR6oymt-gzbdxX0
+Content-Type: application/json
+
+{
+    "managerId": "644d6800bc4d4518ba3219b4" 
+}
+
 
 ###
 

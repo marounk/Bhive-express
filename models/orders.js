@@ -17,10 +17,6 @@ const ordersTable = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "branches",
   },
-  cloverOrderId: {
-    type: String,
-    required: false,
-  },
   total_price: {
     type: Number,
     required: true,
