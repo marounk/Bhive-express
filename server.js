@@ -112,7 +112,7 @@ app.post("/version", async (req, res) => {
 app.post("/login", async (req, res) => {
   const email = req.body.email.toLowerCase();
   const password = md5(req.body.password);
-
+ 
   let find;
   try {
     find = await Users.findOne({ email: email, password: password });
@@ -145,6 +145,39 @@ app.post("/login", async (req, res) => {
     total_points = total_points + one.points;
   }
   result.push(total_points);
+  res.status(201).send(result);
+  // res.json({ userDetails: find });
+});
+
+app.post("/web_login", async (req, res) => {
+  const email = req.body.email.toLowerCase();
+  const password = md5(req.body.password);
+ 
+  let find;
+  try {
+    find = await Users.findOne({ email: email, password: password });
+    if (find == null) {
+      wrong_pass = await Users.findOne({ email: email });
+      if (wrong_pass !== null) {
+        return res.status(400).json({ message: "Wrong Password" });
+      } else {
+        return res.status(400).json({ message: "User not found" });
+      }
+    } else if (find.active == 0) {
+      return res.status(400).json({ message: "User not active" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+
+
+
+  const user = { userId: find._id };
+  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+  find.login_token = accessToken;
+
+  let result = [];
+  result.push(find); 
   res.status(201).send(result);
   // res.json({ userDetails: find });
 });
