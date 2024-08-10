@@ -305,6 +305,23 @@ router.patch("/deactivate-myaccount", async (req, res) => {
     });
 });
 
+router.patch("/deactivate-myaccount-web", async (req, res) => {
+    try {
+        let result = "";
+        const user = await Users.findById(req.body.userId);
+        if (user.password === md5(req.body.password)) {
+            user.active = 0;
+            user.save();
+            result = "deactivated";
+        } else {
+            result = "wrong password";
+        }
+        res.json(result);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
 //Update user type only webhook
 router.patch("/change_type/user-:id", getUsers, async (req, res) => {
     if (req.body.key == "dHe%l491#0GT") {
