@@ -667,6 +667,7 @@ async function getOrderDetails(req, res, next) {
             "notification_userId",
             "text",
             "work",
+            "cloverId"
         ]);
         if (info == null) {
             return res.status(400).json({ message: "Order not found" });
