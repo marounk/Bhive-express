@@ -18,6 +18,11 @@ const AddOns = require("../models/addOns");
 const MerchVar = require("../models/variations");
 const Users = require("../models/users");
 const Menu = require("../models/menu");
+const Points = require("../models/points");
+const Cart = require("../models/cart");
+
+const { sendNotification } = require('./utils/firebase');
+
 
 //Get all (keep it commented)
 router.get("/", async (req, res) => {
@@ -313,59 +318,45 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
               await Cart.find({ userId: order.userId, country: userCountry.country }).remove();
 
               try {
-                  // notification to user
-                  var data = JSON.stringify({
-                      users_id: [order.userId.notification_userId],
-                      title: "B.Hive Orders",
-                      content: "Your order is placed successfully. Thank you!",
-                      subTitle: "",
-                  });
+                const tokens = [req.body.userId.notification_userId];
+            
+                const content = {
+                  title: "B.Hive Orders",
+                  body: "Your order is placed successfully. Thank you!",
+                  type: "order",  
+                  object: "", 
+                  screen: "order-screen"
+                };
+            
+                // Send notifications using the Firebase new
+                await sendNotification(tokens, content);
+            
+                res.status(201).json("Notification sent");
+              } catch (err) {
+                console.error('Error sending notification:', err);
+                res.status(500).json({ message: err.message });
+              }
 
-                  var config = {
-                      method: "post",
-                      url: "https://thebhive.io/api/notifications",
-                      headers: {
-                          "Content-Type": "application/json",
-                      },
-                      data: data,
-                  };
-
-                  axios(config)
-                      .then(function (response) {
-                          console.log(JSON.stringify(response.data));
-                      })
-                      .catch(function (error) {
-                          console.log(error);
-                      });
-              } catch (err) {}
-
-              try {
-                  //notification to manager
-                  const manager = await Manager.find({ branch: order.branchId });
-                  var data_manager = JSON.stringify({
-                      users_id: [manager[0].notification_managerId],
+                  try {
+                    const tokens = [req.body.userId.notification_userId];
+                
+                    const content = {
                       title: "New Order",
-                      content: "New order placed.",
-                      subTitle: "",
-                  });
+                      body: "New order placed.",
+                      type: "order",  
+                      object: "", 
+                      screen: "order-screen"
+                    };
+                
+                    // Send notifications using the Firebase new
+                    await sendNotification(tokens, content);
+                
+                    res.status(201).json("Notification sent");
+                  } catch (err) {
+                    console.error('Error sending notification:', err);
+                    res.status(500).json({ message: err.message });
+                  }
 
-                  var config_manager = {
-                      method: "post",
-                      url: "https://thebhive.io/api/notifications",
-                      headers: {
-                          "Content-Type": "application/json",
-                      },
-                      data: data_manager,
-                  };
-
-                  axios(config_manager)
-                      .then(function (response) {
-                          console.log(JSON.stringify(response.data));
-                      })
-                      .catch(function (error) {
-                          console.log(error);
-                      });
-              } catch (err) {}
           } catch (err) {
               res.status(400).json({ message: err.message });
           }
@@ -379,31 +370,26 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
           "Your order has bee-n declined. Please check with the B.Hive team";
       }
 
-      try{
-        var data = JSON.stringify({
-          users_id: [order.userId.notification_userId],
-          title: "B.Hive Orders",
-          content: content_sent,
-          subTitle: "",
-        });
 
-        var config = {
-          method: "post",
-          url: "https://thebhive.io/api/notifications",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: data,
-        };
-
-        axios(config)
-          .then(function (response) {
-            console.log(JSON.stringify(response.data));
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      } catch(err){}
+        try {
+          const tokens = [req.body.userId.notification_userId];
+      
+          const content = {
+            title: "B.Hive Orders",
+            body: content_sent,
+            type: "order",  
+            object: "", 
+            screen: "order-screen"
+          };
+      
+          // Send notifications using the Firebase new
+          await sendNotification(tokens, content);
+      
+          res.status(201).json("Notification sent");
+        } catch (err) {
+          console.error('Error sending notification:', err);
+          res.status(500).json({ message: err.message });
+        }
 
       res.json(updatedOrder);
     } catch (err) {

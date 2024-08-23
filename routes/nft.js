@@ -11,6 +11,8 @@ const Points = require("../models/points");
 const nftQuestions = require("../models/nftQuestions");
 const nftAnswers = require("../models/nftAnswers");
 
+const { sendNotification } = require('./utils/firebase');
+
 const apiKey =
   "rwzzqd5vfu0dhnutywrj0oocubbasdsxdqxnvxossjesw1b0nj1gswrk4oxbwyzc"; // set your API key here
 const apiSecret =
@@ -99,32 +101,26 @@ router.post("/addQuestion", async (req, res) => {
     const nftUsers = await Users.find({ type: "nft" });
     for (const one of nftUsers) {
       if(one._id != req.body.userId){
-        try{
-          var data = JSON.stringify({
-            users_id: [one.notification_userId],
-            title: "New NFT Question",
-            content: "Hello, take a look on the new question added!",
-            subTitle: "",
-          });
-  
-          var config = {
-            method: "post",
-            url: "https://thebhive.io/api/notifications",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            data: data,
-          };
-  
-          axios(config)
-            .then(function (response) {
-              console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
-        catch(err){}
+          try {
+            const tokens = one.notification_userId;
+        
+            const content = {
+              title: "New NFT Question",
+              body:  "Hello, take a look on the new question added!",
+              type: "nft",  
+              object: "", 
+              screen: "nft-screen"
+            };
+        
+            // Send notifications using the Firebase new
+            await sendNotification(tokens, content);
+        
+            res.status(201).json("Notification sent");
+          } catch (err) {
+            console.error('Error sending notification:', err);
+            res.status(500).json({ message: err.message });
+          }
+       
       } else {}
     }
 
@@ -148,32 +144,26 @@ router.post("/addAnswer", async (req, res) => {
     const nftUsers = await Users.find({ type: "nft" });
     for (const one of nftUsers) {
       if(one._id != req.body.userId){
-        try{
-          var data = JSON.stringify({
-            users_id: [one.notification_userId],
-            title: "New NFT Answer",
-            content: "Hello, take a look on the new answer added!",
-            subTitle: "",
-          });
-  
-          var config = {
-            method: "post",
-            url: "https://thebhive.io/api/notifications",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            data: data,
-          };
-  
-          axios(config)
-            .then(function (response) {
-              console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
-        catch(err){}
+          try {
+            const tokens = [req.body.userId.notification_userId];
+        
+            const content = {
+              title: "New NFT Answer",
+              body: "Hello, take a look on the new answer added!",
+              type: "nft",  
+              object: "", 
+              screen: "nft-screen"
+            };
+        
+            // Send notifications using the Firebase new
+            await sendNotification(tokens, content);
+        
+            res.status(201).json("Notification sent");
+          } catch (err) {
+            console.error('Error sending notification:', err);
+            res.status(500).json({ message: err.message });
+          }
+         
       } else {}
     }
 

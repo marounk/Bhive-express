@@ -11,6 +11,8 @@ const EventBooking = require("../models/eventBooking");
 const Users = require("../models/users");
 const Manager = require("../models/manager");
 
+const { sendNotification } = require('./utils/firebase');
+
 //Get all
 router.get("/", async (req, res) => {
   try {
@@ -82,31 +84,25 @@ router.post("/", authenticateToken, async (req, res) => {
     try {
       const newevent = await event.save();
 
-      try{
-        var data = JSON.stringify({
-          segments: "Subscribed Users",
-          title: "B.Hive Events",
-          content: "Hey! Check our new event",
-          subTitle: "",
-        });
-
-        var config = {
-          method: "post",
-          url: "https://thebhive.io/api/notifications",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: data,
-        };
-
-        axios(config)
-          .then(function (response) {
-            console.log(JSON.stringify(response.data));
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      } catch(err){}
+        try {
+          const tokens = [req.body.userId.notification_userId];
+      
+          const content = {
+            title: "B.Hive Events",
+            body: "Hey! Check our new event",
+            type: "event",  
+            object: "", 
+            screen: "event-screen"
+          };
+      
+          // Send notifications using the Firebase new
+          await sendNotification(tokens, content);
+      
+          res.status(201).json("Notification sent");
+        } catch (err) {
+          console.error('Error sending notification:', err);
+          res.status(500).json({ message: err.message });
+        }
 
       res.status(201).json(newevent);
     } catch (err) {
@@ -160,63 +156,45 @@ router.post("/book", authenticateToken, async (req, res) => {
           event[0].booked_seats = event[0].booked_seats + 1;
           event[0].save();
 
-          try{
-            const user = await Users.findById(req.body.user_id);
+            try {
+              const tokens = [req.body.userId.notification_userId];
+          
+              const content = {
+                title: "B.Hive Events",
+                body: "Your place is now reserved. See you soon!",
+                type: "event",  
+                object: "", 
+                screen: "event-screen"
+              };
+          
+              // Send notifications using the Firebase new
+              await sendNotification(tokens, content);
+          
+              res.status(201).json("Notification sent");
+            } catch (err) {
+              console.error('Error sending notification:', err);
+              res.status(500).json({ message: err.message });
+            }
 
-            //send notification
-            var data_succ = JSON.stringify({
-              users_id: [user.notification_userId],
-              title: "B.Hive Events",
-              content: "Your place is now reserved. See you soon!",
-              subTitle: "",
-            });
-
-            var config_succ = {
-              method: "post",
-              url: "https://thebhive.io/api/notifications",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              data: data_succ,
-            };
-
-            axios(config_succ)
-              .then(function (response) {
-                console.log(JSON.stringify(response.data));
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-          }
-          catch(err){}
-
-          try {
-            //notification to manager
-            const manager = await Manager.find({ branch: event.branch });
-            var data_manager = JSON.stringify({
-                users_id: [manager[0].notification_managerId],
+            try {
+              const tokens = [req.body.userId.notification_userId];
+          
+              const content = {
                 title: "New Events Booking",
-                content: "A seat has been booked in your event.",
-                subTitle: "",
-            });
-
-            var config_manager = {
-                method: "post",
-                url: "https://thebhive.io/api/notifications",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                data: data_manager,
-            };
-
-            axios(config_manager)
-                .then(function (response) {
-                    console.log(JSON.stringify(response.data));
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-          } catch (err) {}
+                body: "A seat has been booked in your event.",
+                type: "event",  
+                object: "", 
+                screen: "event-screen"
+              };
+          
+              // Send notifications using the Firebase new
+              await sendNotification(tokens, content);
+          
+              res.status(201).json("Notification sent");
+            } catch (err) {
+              console.error('Error sending notification:', err);
+              res.status(500).json({ message: err.message });
+            }
 
           res.status(201).json(newbook);
         } catch (err) {

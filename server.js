@@ -15,6 +15,7 @@ const BoughtPoints = require("./models/buyPoints");
 const Cart = require("./models/cart");
 const Levels = require("./models/levels.js");
 const Manager = require("./models/manager");
+const { sendNotification } = require('./utils/firebase');
  
 const axios = require("axios");
 const crypto = require("crypto");
@@ -112,7 +113,7 @@ app.post("/version", async (req, res) => {
 app.post("/login", async (req, res) => {
   const email = req.body.email.toLowerCase();
   const password = md5(req.body.password);
- 
+
   let find;
   try {
     find = await Users.findOne({ email: email, password: password });
@@ -149,38 +150,25 @@ app.post("/login", async (req, res) => {
   // res.json({ userDetails: find });
 });
 
-app.post("/web_login", async (req, res) => {
-  const email = req.body.email.toLowerCase();
-  const password = md5(req.body.password);
- 
-  let find;
+// Remove notification user ID by user ID
+app.post("/remove-notification", async (req, res) => {
+  const { userId } = req.body;
+
   try {
-    find = await Users.findOne({ email: email, password: password });
-    if (find == null) {
-      wrong_pass = await Users.findOne({ email: email });
-      if (wrong_pass !== null) {
-        return res.status(400).json({ message: "Wrong Password" });
-      } else {
-        return res.status(400).json({ message: "User not found" });
-      }
-    } else if (find.active == 0) {
-      return res.status(400).json({ message: "User not active" });
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
     }
+
+    user.notification_userId = null;
+    await user.save();
+
+    res.status(200).json({ message: "Notification user ID removed successfully" });
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
-
-
-
-  const user = { userId: find._id };
-  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-  find.login_token = accessToken;
-
-  let result = [];
-  result.push(find); 
-  res.status(201).send(result);
-  // res.json({ userDetails: find });
 });
+
 
 //Home api : announcement + points + expired
 app.post("/home", async (req, res) => {
@@ -399,33 +387,28 @@ app.post("/check_pending", async (req, res) => {
               res.status(400).json({ message: err.message });
             }
 
-            try{
-              //send notification
-              var data_succ = JSON.stringify({
-                users_id: [pending_order.userId.notification_userId],
+            try {
+              const tokens = [req.body.userId.notification_userId];
+          
+              const content = {
                 title: "B.Hive Orders",
-                content: "Your order is placed successfully. Thank you!",
-                subTitle: "",
-              });
-
-              var config_succ = {
-                method: "post",
-                url: "https://thebhive.io/api/notifications",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                data: data_succ,
+                body: "Your order is placed successfully. Thank you!",
+                type: "order",  
+                object: "", 
+                screen: "order-screen"
               };
-
-              axios(config_succ)
-                .then(function (response) {
-                  console.log(JSON.stringify(response.data));
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
+          
+              // Send notifications using the Firebase new
+              await sendNotification(tokens, content);
+          
+              res.status(201).json("Notification sent");
+            } catch (err) {
+              console.error('Error sending notification:', err);
+              res.status(500).json({ message: err.message });
             }
-            catch(err){}
+
+              
+           
 
             //place order send email on success
             // const order_temp = `<b>Congratulations!</b><br/><br/>Your order ${one._id} has been placed successfully for ${one.total_price}$`;
@@ -452,31 +435,25 @@ app.post("/check_pending", async (req, res) => {
             pending_order.status = "FAIL";
             pending_order.save();
 
-            try{
-              var data = JSON.stringify({
-                users_id: [pending_order.userId.notification_userId],
-                title: "B.Hive Orders",
-                content: "Oops! Something went wrong in your payment",
-                subTitle: "",
-              });
-
-              var config = {
-                method: "post",
-                url: "https://thebhive.io/api/notifications",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                data: data,
-              };
-
-              axios(config)
-                .then(function (response) {
-                  console.log(JSON.stringify(response.data));
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            } catch(err){}
+              try {
+                const tokens = [req.body.userId.notification_userId];
+            
+                const content = {
+                  title: "B.Hive Orders",
+                  body: "Oops! Something went wrong in your payment",
+                  type: "payment",  
+                  object: "", 
+                  screen: "payment-screen"
+                };
+            
+                // Send notifications using the Firebase new
+                await sendNotification(tokens, content);
+            
+                res.status(201).json("Notification sent");
+              } catch (err) {
+                console.error('Error sending notification:', err);
+                res.status(500).json({ message: err.message });
+              }
 
             //place order send email on fail
             // const order_fail_temp = `<b>Oops!</b><br/><br/>Something went wrong in your order payment.<br/>Order id: ${one._id}<br/><br/>Please try again`;
@@ -624,61 +601,45 @@ app.post("/check_pending", async (req, res) => {
               res.status(400).json({ message: err.message });
             }
 
-            try{
-              //send notification
-              var data_succ = JSON.stringify({
-                users_id: [pending_booking.user_id.notification_userId],
-                title: "B.Hive Spaces",
-                content: "Your space is booked successfully. See you soon!",
-                subTitle: "",
-              });
+              try {
+                const tokens = [req.body.userId.notification_userId];
+            
+                const content = {
+                  title: "B.Hive Spaces",
+                  body: "Your space is booked successfully. See you soon!",
+                  type: "space",  
+                  object: "", 
+                  screen: "space-booking-screen"
+                };
+            
+                // Send notifications using the Firebase new
+                await sendNotification(tokens, content);
+            
+                res.status(201).json("Notification sent");
+              } catch (err) {
+                console.error('Error sending notification:', err);
+                res.status(500).json({ message: err.message });
+              }
 
-              var config_succ = {
-                method: "post",
-                url: "https://thebhive.io/api/notifications",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                data: data_succ,
-              };
-
-              axios(config_succ)
-                .then(function (response) {
-                  console.log(JSON.stringify(response.data));
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            }
-            catch(err){}
-
-            try {
-              //notification to manager
-              const manager = await Manager.find({ branch: pending_booking.space_id.branch });
-              var data_manager = JSON.stringify({
-                  users_id: [manager[0].notification_managerId],
+              try {
+                const tokens = [req.body.userId.notification_userId];
+            
+                const content = {
                   title: "New Booking",
-                  content: "New space has been booked.",
-                  subTitle: "",
-              });
-
-              var config_manager = {
-                  method: "post",
-                  url: "https://thebhive.io/api/notifications",
-                  headers: {
-                      "Content-Type": "application/json",
-                  },
-                  data: data_manager,
-              };
-
-              axios(config_manager)
-                  .then(function (response) {
-                      console.log(JSON.stringify(response.data));
-                  })
-                  .catch(function (error) {
-                      console.log(error);
-                  });
-            } catch (err) {}
+                  body: "New space has been booked.",
+                  type: "space",  
+                  object: "", 
+                  screen: "space-booking-screen"
+                };
+            
+                // Send notifications using the Firebase new
+                await sendNotification(tokens, content);
+            
+                res.status(201).json("Notification sent");
+              } catch (err) {
+                console.error('Error sending notification:', err);
+                res.status(500).json({ message: err.message });
+              }
 
             //book space send email success
             // const temp = `<b>Congratulations!</b><br/><br/>Your space has been booked from ${oneBooking.from_date} till ${oneBooking.till_date}`;
@@ -706,31 +667,25 @@ app.post("/check_pending", async (req, res) => {
             pending_booking.status = "FAIL";
             await pending_booking.save();
 
-            try{
-              var data = JSON.stringify({
-                users_id: [pending_booking.userId.notification_userId],
-                title: "B.Hive Spaces",
-                content: "Oops! Something went wrong in your booking",
-                subTitle: "",
-              });
-
-              var config = {
-                method: "post",
-                url: "https://thebhive.io/api/notifications",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                data: data,
-              };
-
-              axios(config)
-                .then(function (response) {
-                  console.log(JSON.stringify(response.data));
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            } catch(err){}
+              try {
+                const tokens = [req.body.userId.notification_userId];
+            
+                const content = {
+                  title: "B.Hive Spaces",
+                  body: "Oops! Something went wrong in your booking",
+                  type: "space",  
+                  object: "", 
+                  screen: "space-booking-screen"
+                };
+            
+                // Send notifications using the Firebase new
+                await sendNotification(tokens, content);
+            
+                res.status(201).json("Notification sent");
+              } catch (err) {
+                console.error('Error sending notification:', err);
+                res.status(500).json({ message: err.message });
+              }
 
             //book space send email fail
             // const fail_temp = `<b>Oops!</b><br/><br/>Something went wrong in your space booking. Please try again`;
