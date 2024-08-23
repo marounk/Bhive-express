@@ -14,6 +14,8 @@ const crypto = require("crypto");
 const axios = require("axios");
 const users = require("../models/users");
 
+const { sendNotification } = require('./utils/firebase');
+
 const apiKey =
   "rwzzqd5vfu0dhnutywrj0oocubbasdsxdqxnvxossjesw1b0nj1gswrk4oxbwyzc"; // set your API key here
 const apiSecret =
@@ -202,61 +204,46 @@ router.post("/book", authenticateToken, async (req, res) => {
               res.status(400).json({ message: err.message });
             }
 
-            try{
-              //send notification
-              var data_succ = JSON.stringify({
-                users_id: [latest.user_id.notification_userId],
-                title: "B.Hive Spaces",
-                content: "Your space is booked successfully. See you soon!",
-                subTitle: "",
-              });
+              try {
+                const tokens = [latest.user_id.notification_userId];
+            
+                const content = {
+                  title: "B.Hive Spaces",
+                  body: "Your space is booked successfully. See you soon!",
+                  type: "space",  
+                  object: "", 
+                  screen: "space-screen"
+                };
+            
+                // Send notifications using the Firebase new
+                await sendNotification(tokens, content);
+            
+                res.status(201).json("Notification sent");
+              } catch (err) {
+                console.error('Error sending notification:', err);
+                res.status(500).json({ message: err.message });
+              }
 
-              var config_succ = {
-                method: "post",
-                url: "https://thebhive.io/api/notifications",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                data: data_succ,
-              };
-
-              axios(config_succ)
-                .then(function (response) {
-                  console.log(JSON.stringify(response.data));
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            }
-            catch(err){}
-
-            try {
-              //notification to manager
-              const manager = await Manager.find({ branch: latest.space_id.branch });
-              var data_manager = JSON.stringify({
-                  users_id: [manager[0].notification_managerId],
+              try {
+                const manager = await Manager.find({ branch: latest.space_id.branch });
+                const tokens = [manager[0].notification_managerId];
+            
+                const content = {
                   title: "New Booking",
-                  content: "New space has been booked.",
-                  subTitle: "",
-              });
-
-              var config_manager = {
-                  method: "post",
-                  url: "https://thebhive.io/api/notifications",
-                  headers: {
-                      "Content-Type": "application/json",
-                  },
-                  data: data_manager,
-              };
-
-              axios(config_manager)
-                  .then(function (response) {
-                      console.log(JSON.stringify(response.data));
-                  })
-                  .catch(function (error) {
-                      console.log(error);
-                  });
-            } catch (err) {}
+                  body: "New space has been booked.",
+                  type: "space",  
+                  object: "", 
+                  screen: "space-screen"
+                };
+            
+                // Send notifications using the Firebase new
+                await sendNotification(tokens, content);
+            
+                res.status(201).json("Notification sent");
+              } catch (err) {
+                console.error('Error sending notification:', err);
+                res.status(500).json({ message: err.message });
+              }
 
             //book space send email success
             // try {

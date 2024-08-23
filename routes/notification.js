@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const { handleDataAndSendNotify } = require("../utils/firebase");
 const OneSignal = require("onesignal-node");
+
+const { sendNotification } = require('../utils/firebase');
 
 const Users = require("../models/users")
 
@@ -60,38 +63,26 @@ router.get("/", client_configuration, async (req, res) => {
 //send custom notification
 router.post("/", authenticateToken, async (req, res) => {
   if (res.authData.adminId !== req.body.adminId) {
-    res.status(400).json({ message: "token error" });
-  } else {
+    return res.status(400).json({ message: "Token error" });
+  }
+
+  try {
     const users = await Users.find({ country: req.body.country });
-    for (const one of users) {
-      try {
-        var data = JSON.stringify({
-            users_id: [one.notification_userId],
-            title: req.body.title,
-            content: req.body.content,
-            subTitle: "",
-        });
+    const tokens = users.map(user => user.notification_userId);
 
-        var config = {
-            method: "post",
-            url: "https://thebhive.io/api/notifications",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            data: data,
-        };
+    const content = {
+      title: req.body.title,
+      body: req.body.content,
+      type: req.body.type,
+      object: req.body.object,
+      screen: req.body.screen
+    };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-      } catch (err) {}
-    }
+    await sendNotification(tokens, content);
 
-    res.status(201).json("notification sent");
+    res.status(201).json("Notification sent");
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
