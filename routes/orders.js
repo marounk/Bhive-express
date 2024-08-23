@@ -21,7 +21,7 @@ const Manager = require("../models/manager");
 const Levels = require("../models/levels");
 const merchandises = require("../models/merchandises");
 
-const { sendNotification } = require('./utils/firebase');
+const { sendNotification } = require('../utils/firebase');
 
 const apiKey = "rwzzqd5vfu0dhnutywrj0oocubbasdsxdqxnvxossjesw1b0nj1gswrk4oxbwyzc"; // set your API key here
 const apiSecret = "ubc7ztfkcc9nushbra4oaopgr7tecocmr3wp8fik7q9kgclk7wmja18qpmhowtrp"; // set your secret key here

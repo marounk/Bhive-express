@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { handleDataAndSendNotify } = require("../utils/firebase");
 const OneSignal = require("onesignal-node");
 
 const { sendNotification } = require('../utils/firebase');

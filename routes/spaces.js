@@ -14,7 +14,7 @@ const crypto = require("crypto");
 const axios = require("axios");
 const users = require("../models/users");
 
-const { sendNotification } = require('./utils/firebase');
+const { sendNotification } = require('../utils/firebase');
 
 const apiKey =
   "rwzzqd5vfu0dhnutywrj0oocubbasdsxdqxnvxossjesw1b0nj1gswrk4oxbwyzc"; // set your API key here

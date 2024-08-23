@@ -11,7 +11,7 @@ const EventBooking = require("../models/eventBooking");
 const Users = require("../models/users");
 const Manager = require("../models/manager");
 
-const { sendNotification } = require('./utils/firebase');
+const { sendNotification } = require('../utils/firebase');
 
 //Get all
 router.get("/", async (req, res) => {
