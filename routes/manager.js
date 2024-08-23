@@ -21,7 +21,7 @@ const Menu = require("../models/menu");
 const Points = require("../models/points");
 const Cart = require("../models/cart");
 
-const { sendNotification } = require('./utils/firebase');
+const { sendNotification } = require('../utils/firebase');
 
 
 //Get all (keep it commented)

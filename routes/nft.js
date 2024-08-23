@@ -11,7 +11,7 @@ const Points = require("../models/points");
 const nftQuestions = require("../models/nftQuestions");
 const nftAnswers = require("../models/nftAnswers");
 
-const { sendNotification } = require('./utils/firebase');
+const { sendNotification } = require('../utils/firebase');
 
 const apiKey =
   "rwzzqd5vfu0dhnutywrj0oocubbasdsxdqxnvxossjesw1b0nj1gswrk4oxbwyzc"; // set your API key here
