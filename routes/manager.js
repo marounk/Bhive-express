@@ -331,7 +331,7 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
                 // Send notifications using the Firebase new
                 await sendNotification(tokens, content);
             
-                res.status(201).json("Notification sent");
+                //res.status(201).json("Notification sent");
               } catch (err) {
                 console.error('Error sending notification:', err);
                 res.status(500).json({ message: err.message });
@@ -351,7 +351,7 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
                     // Send notifications using the Firebase new
                     await sendNotification(tokens, content);
                 
-                    res.status(201).json("Notification sent");
+                    //res.status(201).json("Notification sent");
                   } catch (err) {
                     console.error('Error sending notification:', err);
                     res.status(500).json({ message: err.message });
@@ -385,7 +385,7 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
           // Send notifications using the Firebase new
           await sendNotification(tokens, content);
       
-          res.status(201).json("Notification sent");
+          //res.status(201).json("Notification sent");
         } catch (err) {
           console.error('Error sending notification:', err);
           res.status(500).json({ message: err.message });
