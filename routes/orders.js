@@ -338,45 +338,46 @@ router.post("/", authenticateToken, async (req, res) => {
                         const userCountry = await Users.findById(req.body.userId)
                         await Cart.find({ userId: req.body.userId, country: userCountry.country }).remove();
 
-                            try {
-                                const tokens = [my_order.userId.notification_userId];
-                            
-                                const content = {
-                                  title: "B.Hive Orders",
-                                  body: "Your order is placed successfully. Thank you!",
-                                  type: "order",  
-                                  object: "", 
-                                  screen: "order-screen"
-                                };
-                            
-                                // Send notifications using the Firebase new
-                                await sendNotification(tokens, content);
-                            
-                                res.status(201).json("Notification sent");
-                              } catch (err) {
-                                console.error('Error sending notification:', err);
-                                res.status(500).json({ message: err.message });
-                              }
+                        try {
+                            const tokens = [my_order.userId.notification_userId];
+                        
+                            const content = {
+                                title: "B.Hive Orders",
+                                body: "Your order is placed successfully. Thank you!",
+                                type: "order",  
+                                object: "", 
+                                screen: "order-screen"
+                            };
+                        
+                            // Send notifications using the Firebase new
+                            await sendNotification(tokens, content);
+                        
+                            res.status(201).json("Notification sent");
+                            } catch (err) {
+                            console.error('Error sending notification:', err);
+                            res.status(500).json({ message: err.message });
+                            }
 
-                            try {
-                                const tokens = [manager[0].notification_managerId];
-                            
-                                const content = {
-                                  title: "New Order",
-                                  body: "New order placed.",
-                                  type: "order",  
-                                  object: "", 
-                                  screen: "order-screen"
-                                };
-                            
-                                // Send notifications using the Firebase new
-                                await sendNotification(tokens, content);
-                            
-                                res.status(201).json("Notification sent");
-                              } catch (err) {
-                                console.error('Error sending notification:', err);
-                                res.status(500).json({ message: err.message });
-                              }
+                        try {
+                            const manager = await Manager.find({ branch: req.body.branchId });
+                            const tokens = [manager[0].notification_managerId];
+                        
+                            const content = {
+                                title: "New Order",
+                                body: "New order placed.",
+                                type: "order",  
+                                object: "", 
+                                screen: "order-screen"
+                            };
+                        
+                            // Send notifications using the Firebase new
+                            await sendNotification(tokens, content);
+                        
+                            res.status(201).json("Notification sent");
+                            } catch (err) {
+                            console.error('Error sending notification:', err);
+                            res.status(500).json({ message: err.message });
+                            }
 
                         //place order send email success
                         // const order_temp = `<b>Congratulations!</b><br/><br/>Your order ${my_order._id} has been placed successfully for ${my_order.total_price}$`;
@@ -545,45 +546,44 @@ router.patch("/clover/:id", async (req, res) => {
               res.status(400).json({ message: err.message });
             }
 
-                try {
-                    const tokens = [order.userId.notification_userId];
-                
-                    const content = {
-                      title: "B.Hive Orders",
-                      body: "Your order is placed successfully. Thank you!",
-                      type: "order",  
-                      object: "", 
-                      screen: "order-screen"
-                    };
-                
-                    // Send notifications using the Firebase new
-                    await sendNotification(tokens, content);
-                
-                    res.status(201).json("Notification sent");
-                  } catch (err) {
-                    console.error('Error sending notification:', err);
-                    res.status(500).json({ message: err.message });
-                  }
+            try {
+                const tokens = [order.userId.notification_userId];
+            
+                const content = {
+                    title: "B.Hive Orders",
+                    body: "Your order is placed successfully. Thank you!",
+                    type: "order",  
+                    object: "", 
+                    screen: "order-screen"
+                };
+            
+                // Send notifications using the Firebase new
+                await sendNotification(tokens, content);
+            
+                } catch (err) {
+                console.error('Error sending notification to user:', err);
+                //res.status(500).json({ message: err.message });
+                }
 
-                try {
-                    const tokens = [manager[0].notification_managerId];
-                
-                    const content = {
-                      title: "New Order",
-                      body: "New order placed.",
-                      type: "order",  
-                      object: "", 
-                      screen: "order-screen"
-                    };
-                
-                    // Send notifications using the Firebase new
-                    await sendNotification(tokens, content);
-                
-                    res.status(201).json("Notification sent");
-                  } catch (err) {
-                    console.error('Error sending notification:', err);
-                    res.status(500).json({ message: err.message });
-                  }
+            try {
+                const manager = await Manager.find({ branch: order.branchId });
+                const tokens = [manager[0].notification_managerId];
+            
+                const content = {
+                    title: "New Order",
+                    body: "New order placed.",
+                    type: "order",  
+                    object: "", 
+                    screen: "order-screen"
+                };
+            
+                // Send notifications using the Firebase new
+                await sendNotification(tokens, content);
+        
+                } catch (err) {
+                console.error('Error sending notification to manager:', err);
+                //res.status(500).json({ message: err.message });
+                }
             
             res.json(updatedOrder);
         } catch (err) {
@@ -593,6 +593,21 @@ router.patch("/clover/:id", async (req, res) => {
         res.json({ message: "Unauthorised call!" });
     }
 });
+
+router.patch("/test-:id",getOrderDetails, async (req, res) => {
+    
+          if (req.body.notification_userId != null) {
+            res.order[0].userId.notification_userId = req.body.notification_userId;
+          }
+          try {
+            const updated = await res.order[0].save();
+            res.json(updated);
+          } catch (err) {
+            res.status(400).json({ message: err.message });
+          }
+        
+    
+  });
 
 //Clear all orders
 // router.delete("/", async (req, res) => {
