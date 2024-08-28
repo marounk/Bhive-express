@@ -79,7 +79,7 @@ router.post("/", authenticateToken, async (req, res) => {
 
     await sendNotification(tokens, content);
 
-    res.status(201).json("Notification sent");
+    //res.status(201).json("Notification sent");
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
