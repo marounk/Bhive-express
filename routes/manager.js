@@ -372,7 +372,7 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
 
 
         try {
-          const tokens = [req.body.userId.notification_userId];
+          const tokens = [order.userId.notification_userId];
       
           const content = {
             title: "B.Hive Orders",
