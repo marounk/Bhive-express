@@ -20,6 +20,7 @@ const AddOns = require("../models/addOns");
 const Manager = require("../models/manager");
 const Levels = require("../models/levels");
 const merchandises = require("../models/merchandises");
+const NotificationTokens = require("../models/notificationTokens");
 
 const { sendNotification } = require('../utils/firebase');
 
@@ -339,20 +340,26 @@ router.post("/", authenticateToken, async (req, res) => {
                         await Cart.find({ userId: req.body.userId, country: userCountry.country }).remove();
 
                         try {
-                            const tokens = [my_order.userId.notification_userId];
+                            const tokens = await NotificationTokens.find({ user_id: my_order.userId }).select('token_device');
+                            if (tokens.length === 0) {
+                                console.log("No tokens found for this user.");
+                            }
+                            else{
+                                const content = {
+                                    title: "B.Hive Orders",
+                                    body: "Your order is placed successfully. Thank you!",
+                                    type: "order",  
+                                    object: "", 
+                                    screen: "order-screen"
+                                };
+                            
+                                // Send notifications using the Firebase new
+                                for (const token of tokens) {
+                                    await sendNotification([token.token_device], content);
+                                    console.log("Sending notification to:", token.token_device);
+                                }
+                            }
                         
-                            const content = {
-                                title: "B.Hive Orders",
-                                body: "Your order is placed successfully. Thank you!",
-                                type: "order",  
-                                object: "", 
-                                screen: "order-screen"
-                            };
-                        
-                            // Send notifications using the Firebase new
-                            await sendNotification(tokens, content);
-                        
-                            //res.status(201).json("Notification sent");
                             } catch (err) {
                             console.error('Error sending notification:', err);
                             res.status(500).json({ message: err.message });
@@ -373,7 +380,6 @@ router.post("/", authenticateToken, async (req, res) => {
                             // Send notifications using the Firebase new
                             await sendNotification(tokens, content);
                         
-                            //res.status(201).json("Notification sent");
                             } catch (err) {
                             console.error('Error sending notification:', err);
                             res.status(500).json({ message: err.message });
@@ -445,120 +451,26 @@ router.patch("/clover/:id", async (req, res) => {
             const updatedOrder = await order.save();
             await Cart.find({ userId: order.userId._id, country: order.userId.country }).remove();
 
-            const current_date = new Date();
-            const current_day = current_date.getDate();
-            const current_month = current_date.getMonth() + parseInt(1);
-            const current_year = current_date.getFullYear();
-
-            let exp_day;
-            let exp_month;
-            let exp_year;
-            if (current_day == 29) {
-              exp_day = 1;
-              exp_month = current_month + parseInt(7);
-            } else if (current_day == 30) {
-              exp_day = 1;
-              exp_month = current_month + parseInt(7);
-            } else if (current_day == 31) {
-              exp_day = 1;
-              exp_month = current_month + parseInt(7);
-            } else {
-              exp_day = current_day;
-              exp_month = current_month + parseInt(6);
-            }
-            if (exp_month > 12) {
-              exp_month = exp_month - parseInt(12);
-              exp_year = current_year + parseInt(1);
-            } else {
-              exp_year = current_year;
-            }
-
-            const points = new Points({
-              userId: order.userId._id,
-              orderId: req.params.id,
-              points: parseInt(
-                order.total_price * process.env.USD_POINTS
-              ),
-              exp_day: exp_day,
-              exp_month: exp_month,
-              exp_year: exp_year,
-            });
             try {
-              await points.save();
-
-              // change level
-              try {
-                let result = [];
+                const tokens = await NotificationTokens.find({ user_id: order.userId }).select('token_device');
+                if (tokens.length === 0) {
+                    console.log("No tokens found for this user.");
+                }
+                else{
+                    const content = {
+                        title: "B.Hive Orders",
+                        body: "Your order is placed successfully. Thank you!",
+                        type: "order",  
+                        object: "", 
+                        screen: "order-screen"
+                    };
                 
-                const all_levels = await Levels.find();
-                const user = await Users.findById(order.userId._id);
-                const new_loyalty_points = user.loyalty_points + parseInt(order.total_price * process.env.USD_POINTS)
-                user.loyalty_points = new_loyalty_points;
-                await user.save();
-                let loyalty_points = new_loyalty_points;
-                let level = user.level;
-                let upgrade_level = false;
-
-                if (
-                  parseInt(loyalty_points) >= parseInt(all_levels[4].start_at) &&
-                  (user.level.toString() == all_levels[0]._id.toString() ||
-                    user.level.toString() == all_levels[1]._id.toString() ||
-                    user.level.toString() == all_levels[2]._id.toString() ||
-                    user.level.toString() == all_levels[3]._id.toString())
-                ) {
-                  level = all_levels[4]._id;
-                  upgrade_level = true;
-                } else if (
-                  parseInt(loyalty_points) >= parseInt(all_levels[3].start_at) &&
-                  (user.level.toString() == all_levels[0]._id.toString() ||
-                    user.level.toString() == all_levels[1]._id.toString() ||
-                    user.level.toString() == all_levels[2]._id.toString())
-                ) {
-                  level = all_levels[3]._id;
-                  upgrade_level = true;
-                } else if (
-                  parseInt(loyalty_points) >= parseInt(all_levels[2].start_at) &&
-                  (user.level.toString() == all_levels[0]._id.toString() ||
-                    user.level.toString() == all_levels[1]._id.toString())
-                ) {
-                  level = all_levels[2]._id;
-                  upgrade_level = true;
-                } else if (
-                  parseInt(loyalty_points) >= parseInt(all_levels[1].start_at) &&
-                  user.level.toString() == all_levels[0]._id.toString()
-                ) {
-                  level = all_levels[1]._id;
-                  upgrade_level = true;
+                    // Send notifications using the Firebase new
+                    for (const token of tokens) {
+                        await sendNotification([token.token_device], content);
+                        console.log("Sending notification to:", token.token_device);
+                    }
                 }
-                user.level = level;
-                user.save();
-
-                if(upgrade_level){
-                    const user_level_updated = Users.findById(order.userId._id)
-                    user_level_updated.level_updated = "yes";
-                    await user_level_updated.save();
-                }
-
-              } catch (err) {
-                res.status(500).json({ message: err.message });
-              }
-            } catch (err) {
-              res.status(400).json({ message: err.message });
-            }
-
-            try {
-                const tokens = [order.userId.notification_userId];
-            
-                const content = {
-                    title: "B.Hive Orders",
-                    body: "Your order is placed successfully. Thank you!",
-                    type: "order",  
-                    object: "", 
-                    screen: "order-screen"
-                };
-            
-                // Send notifications using the Firebase new
-                await sendNotification(tokens, content);
             
                 } catch (err) {
                 console.error('Error sending notification to user:', err);
@@ -707,7 +619,7 @@ async function getUserOrders(req, res, next) {
     try {
         orders = await Orders.find({
             userId: req.params.id,
-            status: "SUCCESS",
+            status: { $in: ["SUCCESS", "pending"] }
         })
             .sort({
                 created_date: -1,

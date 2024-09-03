@@ -20,6 +20,8 @@ const Users = require("../models/users");
 const Menu = require("../models/menu");
 const Points = require("../models/points");
 const Cart = require("../models/cart");
+const NotificationTokens = require("../models/notificationTokens");
+const Levels = require("../models/levels");
 
 const { sendNotification } = require('../utils/firebase');
 
@@ -291,7 +293,7 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
       if (status === "confirm") {
         content_sent = "Your order has bee-n confirmed";
 
-        //points logic for canada users
+        //remove points logic for canada users
         if (order.pay_with == "points" && order.countryId == "6332a4cdfe9b8e512af37e15") {
           try {
               let pointsToRemove = parseInt(order.total_price * process.env.POINTS_USD);
@@ -318,48 +320,165 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
               await Cart.find({ userId: order.userId, country: userCountry.country }).remove();
 
               try {
-                const tokens = [req.body.userId.notification_userId];
+                const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+                if (tokens.length === 0) {
+                    console.log("No tokens found for this user.");
+                }
+                else{
+                  const content = {
+                    title: "B.Hive Orders",
+                    body: "Your order is placed successfully. Thank you!",
+                    type: "order",  
+                    object: "", 
+                    screen: "order-screen"
+                  };
+                
+                    // Send notifications using the Firebase new
+                    for (const token of tokens) {
+                        await sendNotification([token.token_device], content);
+                        console.log("Sending notification to:", token.token_device);
+                    }
+                }
             
-                const content = {
-                  title: "B.Hive Orders",
-                  body: "Your order is placed successfully. Thank you!",
-                  type: "order",  
-                  object: "", 
-                  screen: "order-screen"
-                };
-            
-                // Send notifications using the Firebase new
-                await sendNotification(tokens, content);
-            
-                //res.status(201).json("Notification sent");
               } catch (err) {
                 console.error('Error sending notification:', err);
                 res.status(500).json({ message: err.message });
               }
 
-                  try {
-                    const tokens = [req.body.userId.notification_userId];
-                
-                    const content = {
-                      title: "New Order",
-                      body: "New order placed.",
-                      type: "order",  
-                      object: "", 
-                      screen: "order-screen"
-                    };
+              try {
+                const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+                if (tokens.length === 0) {
+                    console.log("No tokens found for this user.");
+                }
+                else{
+                  const content = {
+                    title: "New Order",
+                    body: "New order placed.",
+                    type: "order",  
+                    object: "", 
+                    screen: "order-screen"
+                  };
                 
                     // Send notifications using the Firebase new
-                    await sendNotification(tokens, content);
-                
-                    //res.status(201).json("Notification sent");
-                  } catch (err) {
-                    console.error('Error sending notification:', err);
-                    res.status(500).json({ message: err.message });
-                  }
+                    for (const token of tokens) {
+                        await sendNotification([token.token_device], content);
+                        console.log("Sending notification to:", token.token_device);
+                    }
+                }
+            
+              } catch (err) {
+                console.error('Error sending notification:', err);
+                res.status(500).json({ message: err.message });
+              }
 
           } catch (err) {
               res.status(400).json({ message: err.message });
           }
+        }
+
+        //add points logic for canada users
+        if (order.pay_with == "clover" && order.countryId == "6332a4cdfe9b8e512af37e15") {
+          const current_date = new Date();
+          const current_day = current_date.getDate();
+          const current_month = current_date.getMonth() + parseInt(1);
+          const current_year = current_date.getFullYear();
+
+          let exp_day;
+          let exp_month;
+          let exp_year;
+          if (current_day == 29) {
+            exp_day = 1;
+            exp_month = current_month + parseInt(7);
+          } else if (current_day == 30) {
+            exp_day = 1;
+            exp_month = current_month + parseInt(7);
+          } else if (current_day == 31) {
+            exp_day = 1;
+            exp_month = current_month + parseInt(7);
+          } else {
+            exp_day = current_day;
+            exp_month = current_month + parseInt(6);
+          }
+          if (exp_month > 12) {
+            exp_month = exp_month - parseInt(12);
+            exp_year = current_year + parseInt(1);
+          } else {
+            exp_year = current_year;
+          }
+
+          const points = new Points({
+            userId: order.userId._id,
+            orderId: order._id,
+            points: parseInt(
+              order.total_price * process.env.USD_POINTS
+            ),
+            exp_day: exp_day,
+            exp_month: exp_month,
+            exp_year: exp_year,
+          });
+            
+          try {
+              await points.save();
+
+              // change level
+              try {
+                let result = [];
+                
+                const all_levels = await Levels.find();
+                const user = await Users.findById(order.userId._id);
+                const new_loyalty_points = user.loyalty_points + parseInt(order.total_price * process.env.USD_POINTS)
+                user.loyalty_points = new_loyalty_points;
+                await user.save();
+                let loyalty_points = new_loyalty_points;
+                let level = user.level;
+                let upgrade_level = false;
+
+                if (
+                  parseInt(loyalty_points) >= parseInt(all_levels[4].start_at) &&
+                  (user.level.toString() == all_levels[0]._id.toString() ||
+                    user.level.toString() == all_levels[1]._id.toString() ||
+                    user.level.toString() == all_levels[2]._id.toString() ||
+                    user.level.toString() == all_levels[3]._id.toString())
+                ) {
+                  level = all_levels[4]._id;
+                  upgrade_level = true;
+                } else if (
+                  parseInt(loyalty_points) >= parseInt(all_levels[3].start_at) &&
+                  (user.level.toString() == all_levels[0]._id.toString() ||
+                    user.level.toString() == all_levels[1]._id.toString() ||
+                    user.level.toString() == all_levels[2]._id.toString())
+                ) {
+                  level = all_levels[3]._id;
+                  upgrade_level = true;
+                } else if (
+                  parseInt(loyalty_points) >= parseInt(all_levels[2].start_at) &&
+                  (user.level.toString() == all_levels[0]._id.toString() ||
+                    user.level.toString() == all_levels[1]._id.toString())
+                ) {
+                  level = all_levels[2]._id;
+                  upgrade_level = true;
+                } else if (
+                  parseInt(loyalty_points) >= parseInt(all_levels[1].start_at) &&
+                  user.level.toString() == all_levels[0]._id.toString()
+                ) {
+                  level = all_levels[1]._id;
+                  upgrade_level = true;
+                }
+                user.level = level;
+                user.save();
+
+                if(upgrade_level){
+                    const user_level_updated = Users.findById(order.userId._id)
+                    user_level_updated.level_updated = "yes";
+                    await user_level_updated.save();
+                }
+
+              } catch (err) {
+                res.status(500).json({ message: err.message });
+              }
+            } catch (err) {
+              res.status(400).json({ message: err.message });
+            }
         }
       } else if (status === "preparing") {
         content_sent = "Your order is bee-ing prepared";
@@ -371,25 +490,33 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
       }
 
 
+      if (status !== "confirm"){
         try {
-          const tokens = [order.userId.notification_userId];
+          const tokens = await NotificationTokens.find({ user_id: order.userId }).select('token_device');
+          if (tokens.length === 0) {
+              console.log("No tokens found for this user.");
+          }
+          else{
+            const content = {
+              title: "B.Hive Orders",
+              body: content_sent,
+              type: "order",  
+              object: "", 
+              screen: "order-screen"
+            };
+          
+              // Send notifications using the Firebase new
+              for (const token of tokens) {
+                  await sendNotification([token.token_device], content);
+                  console.log("Sending notification to:", token.token_device);
+              }
+          }
       
-          const content = {
-            title: "B.Hive Orders",
-            body: content_sent,
-            type: "order",  
-            object: "", 
-            screen: "order-screen"
-          };
-      
-          // Send notifications using the Firebase new
-          await sendNotification(tokens, content);
-      
-          //res.status(201).json("Notification sent");
         } catch (err) {
           console.error('Error sending notification:', err);
           res.status(500).json({ message: err.message });
         }
+      }
 
       res.json(updatedOrder);
     } catch (err) {

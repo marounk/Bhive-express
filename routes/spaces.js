@@ -9,6 +9,7 @@ const Book = require("../models/book");
 const Points = require("../models/points");
 const Users = require("../models/users");
 const Manager = require("../models/manager");
+const NotificationTokens = require("../models/notificationTokens");
 
 const crypto = require("crypto");
 const axios = require("axios");
@@ -204,9 +205,13 @@ router.post("/book", authenticateToken, async (req, res) => {
               res.status(400).json({ message: err.message });
             }
 
-              try {
-                const tokens = [latest.user_id.notification_userId];
-            
+            try {
+
+              const tokens = await NotificationTokens.find({ user_id: latest.user_id }).select('token_device');
+              if (tokens.length === 0) {
+                  console.log("No tokens found for this user.");
+              }
+              else {
                 const content = {
                   title: "B.Hive Spaces",
                   body: "Your space is booked successfully. See you soon!",
@@ -216,57 +221,37 @@ router.post("/book", authenticateToken, async (req, res) => {
                 };
             
                 // Send notifications using the Firebase new
-                await sendNotification(tokens, content);
-            
-                //res.status(201).json("Notification sent");
-              } catch (err) {
-                console.error('Error sending notification:', err);
-                res.status(500).json({ message: err.message });
-              }
+                for (const token of tokens) {
+                  await sendNotification([token.token_device], content);
+                  console.log("Sending notification to:", token.token_device);
+                }
 
-              try {
-                const manager = await Manager.find({ branch: latest.space_id.branch });
-                const tokens = [manager[0].notification_managerId];
-            
-                const content = {
-                  title: "New Booking",
-                  body: "New space has been booked.",
-                  type: "space",  
-                  object: "", 
-                  screen: "space-screen"
-                };
-            
-                // Send notifications using the Firebase new
-                await sendNotification(tokens, content);
-            
-                //res.status(201).json("Notification sent");
-              } catch (err) {
-                console.error('Error sending notification:', err);
-                res.status(500).json({ message: err.message });
+                console.log("Notification content:", content);
               }
+            } catch (err) {
+              console.error('Error sending notification:', err);
+              res.status(500).json({ message: err.message });
+            }
 
-            //book space send email success
-            // try {
-            //   // send email
-            //   const temp = `<b>Congratulations!</b><br/><br/>Your space has been booked from ${req.body.from_date} till ${req.body.till_date}`;
-            //   var send_email = {
-            //     url: `https://backend.thebhive.io/api/mobile_send_email?subject=Book%20Space&to=${latest.user_id.email}&template=${temp}`,
-            //     method: "POST",
-            //     headers: {
-            //       "Content-Type": "application/json",
-            //     },
-            //   };
-            //   request(send_email, function (error, response, body) {
-            //     if (!error && response.statusCode == 200) {
-            //       console.log("Message sent");
-            //     } else {
-            //       console.log(error);
-            //       console.log("Message NOT sent!");
-            //     }
-            //   });
-            // } catch (err) {
-            //   res.status(400).json({ message: err.message });
-            // }
+            try {
+              const manager = await Manager.find({ branch: latest.space_id.branch });
+              const tokens = [manager[0].notification_managerId];
+          
+              const content = {
+                title: "New Booking",
+                body: "New space has been booked.",
+                type: "space",  
+                object: "", 
+                screen: "space-screen"
+              };
+          
+              // Send notifications using the Firebase new
+              await sendNotification(tokens, content);
+          
+            } catch (err) {
+              console.error('Error sending notification:', err);
+              res.status(500).json({ message: err.message });
+            }
           }
 
           result.push(latest);

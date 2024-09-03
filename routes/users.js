@@ -408,6 +408,9 @@ router.patch("/:id", getUsers, async (req, res) => {
                 if (req.body.text != null) {
                     res.user.text = req.body.text;
                 }
+                if (req.body.loyalty_points != null) {
+                    res.user.loyalty_points = req.body.loyalty_points;
+                }
                 try {
                     const updatedUser = await res.user.save();
                     res.json(updatedUser);
