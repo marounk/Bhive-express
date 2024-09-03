@@ -15,6 +15,7 @@ const BoughtPoints = require("./models/buyPoints");
 const Cart = require("./models/cart");
 const Levels = require("./models/levels.js");
 const Manager = require("./models/manager");
+const NotificationTokens = require("./models/notificationTokens");
 const { sendNotification } = require('./utils/firebase');
  
 const axios = require("axios");
@@ -155,15 +156,14 @@ app.post("/remove-notification", async (req, res) => {
   const { userId } = req.body;
 
   try {
-    const user = await Users.findById(userId);
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
+    const tokens = await NotificationTokens.find({ user_id: userId });
+    if (tokens.length === 0) {
+      return res.status(400).json({ message: "No tokens found for this user" });
     }
 
-    user.notification_userId = null;
-    await user.save();
+    await NotificationTokens.deleteMany({ user_id: userId });
 
-    res.status(200).json({ message: "Notification user ID removed successfully" });
+    res.status(200).json({ message: "Notification tokens removed successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -178,10 +178,14 @@ app.post("/add-notification", async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    user.notification_userId = notificationUserId;
-    await user.save();
+    const newToken = new NotificationTokens({
+      user_id: userId,
+      token_device: notificationUserId,
+    });
 
-    res.status(200).json({ message: "Notification user ID added successfully" });
+    await newToken.save();
+
+    res.status(200).json({ message: "Notification token added successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -405,20 +409,26 @@ app.post("/check_pending", async (req, res) => {
             }
 
             try {
-              const tokens = [req.body.userId.notification_userId];
+              const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+              if (tokens.length === 0) {
+                  console.log("No tokens found for this user.");
+              }
+              else{
+                const content = {
+                  title: "B.Hive Orders",
+                  body: "Your order is placed successfully. Thank you!",
+                  type: "order",  
+                  object: "", 
+                  screen: "order-screen"
+                };
+              
+                  // Send notifications using the Firebase new
+                  for (const token of tokens) {
+                      await sendNotification([token.token_device], content);
+                      console.log("Sending notification to:", token.token_device);
+                  }
+              }
           
-              const content = {
-                title: "B.Hive Orders",
-                body: "Your order is placed successfully. Thank you!",
-                type: "order",  
-                object: "", 
-                screen: "order-screen"
-              };
-          
-              // Send notifications using the Firebase new
-              await sendNotification(tokens, content);
-          
-              //res.status(201).json("Notification sent");
             } catch (err) {
               console.error('Error sending notification:', err);
               res.status(500).json({ message: err.message });
@@ -453,20 +463,26 @@ app.post("/check_pending", async (req, res) => {
             pending_order.save();
 
               try {
-                const tokens = [req.body.userId.notification_userId];
+                const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+                if (tokens.length === 0) {
+                    console.log("No tokens found for this user.");
+                }
+                else{
+                  const content = {
+                    title: "B.Hive Orders",
+                    body: "Oops! Something went wrong in your payment",
+                    type: "payment",  
+                    object: "", 
+                    screen: "payment-screen"
+                  };
+                
+                    // Send notifications using the Firebase new
+                    for (const token of tokens) {
+                        await sendNotification([token.token_device], content);
+                        console.log("Sending notification to:", token.token_device);
+                    }
+                }
             
-                const content = {
-                  title: "B.Hive Orders",
-                  body: "Oops! Something went wrong in your payment",
-                  type: "payment",  
-                  object: "", 
-                  screen: "payment-screen"
-                };
-            
-                // Send notifications using the Firebase new
-                await sendNotification(tokens, content);
-            
-                //res.status(201).json("Notification sent");
               } catch (err) {
                 console.error('Error sending notification:', err);
                 res.status(500).json({ message: err.message });
@@ -619,40 +635,52 @@ app.post("/check_pending", async (req, res) => {
             }
 
               try {
-                const tokens = [req.body.userId.notification_userId];
+                const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+                if (tokens.length === 0) {
+                    console.log("No tokens found for this user.");
+                }
+                else{
+                  const content = {
+                    title: "B.Hive Spaces",
+                    body: "Your space is booked successfully. See you soon!",
+                    type: "space",  
+                    object: "", 
+                    screen: "space-booking-screen"
+                  };
+                
+                    // Send notifications using the Firebase new
+                    for (const token of tokens) {
+                        await sendNotification([token.token_device], content);
+                        console.log("Sending notification to:", token.token_device);
+                    }
+                }
             
-                const content = {
-                  title: "B.Hive Spaces",
-                  body: "Your space is booked successfully. See you soon!",
-                  type: "space",  
-                  object: "", 
-                  screen: "space-booking-screen"
-                };
-            
-                // Send notifications using the Firebase new
-                await sendNotification(tokens, content);
-            
-                //res.status(201).json("Notification sent");
               } catch (err) {
                 console.error('Error sending notification:', err);
                 res.status(500).json({ message: err.message });
               }
 
               try {
-                const tokens = [req.body.userId.notification_userId];
+                const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+                if (tokens.length === 0) {
+                    console.log("No tokens found for this user.");
+                }
+                else{
+                  const content = {
+                    title: "New Booking",
+                    body: "New space has been booked.",
+                    type: "space",  
+                    object: "", 
+                    screen: "space-booking-screen"
+                  };
+                
+                    // Send notifications using the Firebase new
+                    for (const token of tokens) {
+                        await sendNotification([token.token_device], content);
+                        console.log("Sending notification to:", token.token_device);
+                    }
+                }
             
-                const content = {
-                  title: "New Booking",
-                  body: "New space has been booked.",
-                  type: "space",  
-                  object: "", 
-                  screen: "space-booking-screen"
-                };
-            
-                // Send notifications using the Firebase new
-                await sendNotification(tokens, content);
-            
-                //res.status(201).json("Notification sent");
               } catch (err) {
                 console.error('Error sending notification:', err);
                 res.status(500).json({ message: err.message });
@@ -685,20 +713,26 @@ app.post("/check_pending", async (req, res) => {
             await pending_booking.save();
 
               try {
-                const tokens = [req.body.userId.notification_userId];
+                const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+                if (tokens.length === 0) {
+                    console.log("No tokens found for this user.");
+                }
+                else{
+                  const content = {
+                    title: "B.Hive Spaces",
+                    body: "Oops! Something went wrong in your booking",
+                    type: "space",  
+                    object: "", 
+                    screen: "space-booking-screen"
+                  };
+                
+                    // Send notifications using the Firebase new
+                    for (const token of tokens) {
+                        await sendNotification([token.token_device], content);
+                        console.log("Sending notification to:", token.token_device);
+                    }
+                }
             
-                const content = {
-                  title: "B.Hive Spaces",
-                  body: "Oops! Something went wrong in your booking",
-                  type: "space",  
-                  object: "", 
-                  screen: "space-booking-screen"
-                };
-            
-                // Send notifications using the Firebase new
-                await sendNotification(tokens, content);
-            
-                //res.status(201).json("Notification sent");
               } catch (err) {
                 console.error('Error sending notification:', err);
                 res.status(500).json({ message: err.message });

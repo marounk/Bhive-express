@@ -14,6 +14,9 @@ async function sendNotification(tokens, content, link = 'FLUTTER_NOTIFICATION_CL
   try {
     if (!tokens.length) return false;
 
+    console.log("here tokens:", tokens);
+    console.log("here content:", content);
+
     const message = {
       notification: {
         title: content.title || '',

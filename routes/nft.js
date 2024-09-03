@@ -10,6 +10,7 @@ const Users = require("../models/users");
 const Points = require("../models/points");
 const nftQuestions = require("../models/nftQuestions");
 const nftAnswers = require("../models/nftAnswers");
+const NotificationTokens = require("../models/notificationTokens");
 
 const { sendNotification } = require('../utils/firebase');
 
@@ -102,20 +103,26 @@ router.post("/addQuestion", async (req, res) => {
     for (const one of nftUsers) {
       if(one._id != req.body.userId){
           try {
-            const tokens = one.notification_userId;
+            const tokens = await NotificationTokens.find({ user_id: one._id }).select('token_device');
+            if (tokens.length === 0) {
+                console.log("No tokens found for this user.");
+            }
+            else{
+              const content = {
+                title: "New NFT Question",
+                body:  "Hello, take a look on the new question added!",
+                type: "nft",  
+                object: "", 
+                screen: "nft-screen"
+              };
+            
+                // Send notifications using the Firebase new
+                for (const token of tokens) {
+                    await sendNotification([token.token_device], content);
+                    console.log("Sending notification to:", token.token_device);
+                }
+            }
         
-            const content = {
-              title: "New NFT Question",
-              body:  "Hello, take a look on the new question added!",
-              type: "nft",  
-              object: "", 
-              screen: "nft-screen"
-            };
-        
-            // Send notifications using the Firebase new
-            await sendNotification(tokens, content);
-        
-            //res.status(201).json("Notification sent");
           } catch (err) {
             console.error('Error sending notification:', err);
             res.status(500).json({ message: err.message });
@@ -145,20 +152,26 @@ router.post("/addAnswer", async (req, res) => {
     for (const one of nftUsers) {
       if(one._id != req.body.userId){
           try {
-            const tokens = [req.body.userId.notification_userId];
+            const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+            if (tokens.length === 0) {
+                console.log("No tokens found for this user.");
+            }
+            else{
+              const content = {
+                title: "New NFT Answer",
+                body: "Hello, take a look on the new answer added!",
+                type: "nft",  
+                object: "", 
+                screen: "nft-screen"
+              };
+            
+                // Send notifications using the Firebase new
+                for (const token of tokens) {
+                    await sendNotification([token.token_device], content);
+                    console.log("Sending notification to:", token.token_device);
+                }
+            }
         
-            const content = {
-              title: "New NFT Answer",
-              body: "Hello, take a look on the new answer added!",
-              type: "nft",  
-              object: "", 
-              screen: "nft-screen"
-            };
-        
-            // Send notifications using the Firebase new
-            await sendNotification(tokens, content);
-        
-            //res.status(201).json("Notification sent");
           } catch (err) {
             console.error('Error sending notification:', err);
             res.status(500).json({ message: err.message });
