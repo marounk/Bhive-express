@@ -63,6 +63,16 @@ router.post("/", async (req, res) => {
             } else {
                 try {
                     const all_users = await Users.find().select(["profile","name","email","active","created_date","customized_userId","level","type","notification_userId","loyalty_points","country","cloverId","cardDigits"]);
+                    for (let user of all_users) {
+                        const points = await Points.find({ userId: user._id }).select("points");
+                        let total_points = 0;
+
+                        for (const one of points) {
+                            total_points += one.points;
+                        }
+                        user._doc.redeemable_points = total_points;
+                    }
+
                     res.json(all_users);
                 } catch (err) {
                     res.status(500).json({ message: err.message });
