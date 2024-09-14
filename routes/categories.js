@@ -29,6 +29,7 @@ router.post("/", authenticateToken, async (req, res) => {
       icon: req.body.icon,
       color: req.body.color,
       type: req.body.type,
+      order: req.body.order,
     });
     try {
       const newCat = await cat.save();
@@ -63,6 +64,9 @@ router.patch("/:id", getCategory, async (req, res) => {
         }
         if (req.body.type != null) {
           res.cat.type = req.body.type;
+        }
+        if (req.body.order != null) {
+          res.cat.type = req.body.order;
         }
         try {
           const updatedCat = await res.cat.save();

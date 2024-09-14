@@ -899,6 +899,7 @@ Content-Type: application/json
 ###
 
 POST http://localhost:3000/announcement
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2NDRkNjgwMGJjNGQ0NTE4YmEzMjE5YjQiLCJpYXQiOjE3MjAxMjQzNTN9.-lMeFNw0V3glrSo-eEMRdLZonql1eR6oymt-gzbdxX0
 Content-Type: application/json
 
 {
@@ -909,6 +910,25 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3000/announcement
+
+###
+
+GET http://localhost:3000/announcement/6389d2189c410a9244a30011
+
+###
+
+PATCH http://localhost:3000/announcement/6389d2189c410a9244a30011
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2NDRkNjgwMGJjNGQ0NTE4YmEzMjE5YjQiLCJpYXQiOjE3MjAxMjQzNTN9.-lMeFNw0V3glrSo-eEMRdLZonql1eR6oymt-gzbdxX0
+Content-Type: application/json
+
+{
+    "order": "1"
+}
+
+###
+
+DELETE http://localhost:3000/announcement/66e543b1e29240b892b0c08b
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2NDRkNjgwMGJjNGQ0NTE4YmEzMjE5YjQiLCJpYXQiOjE3MjAxMjQzNTN9.-lMeFNw0V3glrSo-eEMRdLZonql1eR6oymt-gzbdxX0
 
 ###
 

@@ -25,6 +25,11 @@ const announcementTable = new mongoose.Schema({
     type: String,
     required: false,
   },
+  order: {
+    type: Number,
+    required: false,
+    default: "0",
+  },
   created_date: {
     type: Date,
     required: true,

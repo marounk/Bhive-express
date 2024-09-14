@@ -43,6 +43,16 @@ router.get("/dropdown/branch-:id", async (req, res) => {
   }
 });
 
+//Get announcement by id
+router.get("/:id", async (req, res) => {
+  try {
+      const announcement = await Announcement.findById(req.params.id);
+      res.send(announcement);
+  } catch (err) {
+      res.status(500).json({ message: err.message });
+  }
+});
+
 //Add new
 router.post("/", authenticateToken, async (req, res) => {
   if (res.authData.adminId !== req.body.adminId) {
@@ -55,6 +65,7 @@ router.post("/", authenticateToken, async (req, res) => {
       link_type: req.body.link_type,
       internal_link: req.body.internal_link,
       internal_type: req.body.internal_type,
+      order: req.body.order,
     });
     try {
       const newAnnouncement = await announcement.save();
@@ -92,6 +103,9 @@ router.patch("/:id", getAnnouncements, async (req, res) => {
         }
         if (req.body.internal_type != null) {
           res.announcement.internal_type = req.body.internal_type;
+        }
+        if (req.body.order != null) {
+          res.announcement.order = req.body.order;
         }
 
         try {
