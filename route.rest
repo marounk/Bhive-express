@@ -451,6 +451,25 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:3000/categories/update-order
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2NDRkNjgwMGJjNGQ0NTE4YmEzMjE5YjQiLCJpYXQiOjE3MjAxMjQzNTN9.-lMeFNw0V3glrSo-eEMRdLZonql1eR6oymt-gzbdxX0
+Content-Type: application/json
+
+{
+    "categories": [
+        {
+            "id": "638766716c0bf952dec58fdd",
+            "order": "1"
+        },
+        {
+            "id": "63affd1b32a5ba73383f23bd",
+            "order": "2"
+        }
+    ]
+}
+
+###
+
 PATCH http://localhost:3000/categories/636be6ef546989cece303022
 Content-Type: application/json
 
@@ -560,6 +579,25 @@ Content-Type: application/json
     "title": "Syrup",
     "price": "1",
     "type": "cold drink"
+}
+
+###
+
+POST http://localhost:3000/addOns/update-order
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2NDRkNjgwMGJjNGQ0NTE4YmEzMjE5YjQiLCJpYXQiOjE3MjAxMjQzNTN9.-lMeFNw0V3glrSo-eEMRdLZonql1eR6oymt-gzbdxX0
+Content-Type: application/json
+
+{
+    "addOns": [
+        {
+            "id": "63353c2e4b7f141c2d249f8f",
+            "order": "1"
+        },
+        {
+            "id": "63b00ef105db3e97db468b11",
+            "order": "2"
+        }
+    ]
 }
 
 ###

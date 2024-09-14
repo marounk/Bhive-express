@@ -65,7 +65,6 @@ router.post("/", authenticateToken, async (req, res) => {
       link_type: req.body.link_type,
       internal_link: req.body.internal_link,
       internal_type: req.body.internal_type,
-      order: req.body.order,
     });
     try {
       const newAnnouncement = await announcement.save();
@@ -74,6 +73,46 @@ router.post("/", authenticateToken, async (req, res) => {
       res.status(400).json({ message: err.message });
     }
   }
+});
+
+//update announcement order
+router.post('/update-order', authenticateToken, async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, authData) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+    if (authData.adminId !== req.body.adminId) {
+      return res.status(400).json({ message: "token error" });
+    }
+
+    const announcementList = req.body.announcement;
+
+    try {
+      if (!Array.isArray(announcementList)) {
+        return res.status(400).json({ message: "Invalid data format" });
+      }
+
+      const updatePromises = announcementList.map(async (announcement) => {
+        const { id, order } = announcement;
+        return Announcement.findByIdAndUpdate(
+          id,
+          { $set: { order: order } },
+          { new: true }
+        );
+      });
+
+      const updatedAnnouncement = await Promise.all(updatePromises);
+
+      res.status(200).json(updatedAnnouncement);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  });
 });
 
 // Update announcement
@@ -103,9 +142,6 @@ router.patch("/:id", getAnnouncements, async (req, res) => {
         }
         if (req.body.internal_type != null) {
           res.announcement.internal_type = req.body.internal_type;
-        }
-        if (req.body.order != null) {
-          res.announcement.order = req.body.order;
         }
 
         try {
