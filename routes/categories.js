@@ -29,7 +29,6 @@ router.post("/", authenticateToken, async (req, res) => {
       icon: req.body.icon,
       color: req.body.color,
       type: req.body.type,
-      order: req.body.order,
     });
     try {
       const newCat = await cat.save();
@@ -38,6 +37,46 @@ router.post("/", authenticateToken, async (req, res) => {
       res.status(400).json({ message: err.message });
     }
   }
+});
+
+//update categories order
+router.post('/update-order', authenticateToken, async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, authData) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+    if (authData.adminId !== req.body.adminId) {
+      return res.status(400).json({ message: "token error" });
+    }
+
+    const categoriesList = req.body.categories;
+
+    try {
+      if (!Array.isArray(categoriesList)) {
+        return res.status(400).json({ message: "Invalid data format" });
+      }
+
+      const updatePromises = categoriesList.map(async (categories) => {
+        const { id, order } = categories;
+        return Categories.findByIdAndUpdate(
+          id,
+          { $set: { order: order } },
+          { new: true }
+        );
+      });
+
+      const updatedCategories = await Promise.all(updatePromises);
+
+      res.status(200).json(updatedCategories);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  });
 });
 
 //Update
@@ -64,9 +103,6 @@ router.patch("/:id", getCategory, async (req, res) => {
         }
         if (req.body.type != null) {
           res.cat.type = req.body.type;
-        }
-        if (req.body.order != null) {
-          res.cat.type = req.body.order;
         }
         try {
           const updatedCat = await res.cat.save();

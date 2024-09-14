@@ -7,14 +7,14 @@ const AddOns = require("../models/addOns");
 
 
 //Get all addOns 
-// router.get("/", async (req, res) => {
-//   try {
-//     const all_adds = await AddOns.find();
-//     res.json(all_adds);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
+router.get("/", async (req, res) => {
+  try {
+    const all_adds = await AddOns.find();
+    res.json(all_adds);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 //Get addOns by country
 router.get("/country-:id", getCountryAddOns, async (req, res) => {
@@ -35,7 +35,6 @@ router.post("/", authenticateToken, async (req, res) => {
       title: req.body.title,
       price: req.body.price,
       type: req.body.type,
-      order: req.body.order,
     });
     try {
       const newAdds = await addOn.save();
@@ -50,6 +49,46 @@ router.post("/", authenticateToken, async (req, res) => {
       res.status(400).json({ message: err.message });
     }
   }
+});
+
+//update addOns order
+router.post('/update-order', authenticateToken, async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, authData) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+    if (authData.adminId !== req.body.adminId) {
+      return res.status(400).json({ message: "token error" });
+    }
+
+    const addOnsList = req.body.addOns;
+
+    try {
+      if (!Array.isArray(addOnsList)) {
+        return res.status(400).json({ message: "Invalid data format" });
+      }
+
+      const updatePromises = addOnsList.map(async (addOn) => {
+        const { id, order } = addOn;
+        return AddOns.findByIdAndUpdate(
+          id,
+          { $set: { order: order } },
+          { new: true }
+        );
+      });
+
+      const updatedAddOns = await Promise.all(updatePromises);
+
+      res.status(200).json(updatedAddOns);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  });
 });
 
 //Update
@@ -73,9 +112,6 @@ router.patch("/:id", getAddOn, async (req, res) => {
         }
         if (req.body.type != null) {
           res.add.type = req.body.type;
-        }
-        if (req.body.order != null) {
-          res.add.order = req.body.order;
         }
         try {
           const updatedAdd = await res.add.save();
