@@ -21,6 +21,11 @@ const categoriesTable = new mongoose.Schema({
     type: String,
     required: true,
   },
+  order: {
+    type: Number,
+    required: false,
+    default: "0",
+  },
   created_date: {
     type: Date,
     required: true,

@@ -35,6 +35,7 @@ router.post("/", authenticateToken, async (req, res) => {
       title: req.body.title,
       price: req.body.price,
       type: req.body.type,
+      order: req.body.order,
     });
     try {
       const newAdds = await addOn.save();
@@ -72,6 +73,9 @@ router.patch("/:id", getAddOn, async (req, res) => {
         }
         if (req.body.type != null) {
           res.add.type = req.body.type;
+        }
+        if (req.body.order != null) {
+          res.add.order = req.body.order;
         }
         try {
           const updatedAdd = await res.add.save();
