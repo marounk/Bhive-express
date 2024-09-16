@@ -178,18 +178,35 @@ async function getAddOn(req, res, next) {
 async function getCountryAddOns(req, res, next) {
   let addOns;
   try {
-    addOns = await AddOns.find({ country: req.params.id });
-    if (addOns == null) {
-      return res
-        .status(400)
-        .json({ message: "No AddOns available in this country" });
+    const countryId = req.params.id;
+
+    addOns = await AddOns.aggregate([
+      { $match: { country: countryId } }, // Use countryId directly if it is a string
+      {
+        $addFields: {
+          sortOrder: {
+            $cond: {
+              if: { $gt: ["$order", null] },
+              then: "$order",
+              else: Number.MAX_SAFE_INTEGER
+            }
+          }
+        }
+      },
+      { $sort: { sortOrder: 1 } },
+      { $project: { sortOrder: 0 } } // Remove the sortOrder field
+    ]);
+
+    if (addOns.length === 0) {
+      return res.status(400).json({ message: "No add-ons available in this country" });
     }
+
+    res.addOns = addOns;
+    next();
   } catch (err) {
+    console.error("Error:", err.message);
     return res.status(500).json({ message: err.message });
   }
-
-  res.addOns = addOns;
-  next();
 }
 
 function authenticateToken(req, res, next) {

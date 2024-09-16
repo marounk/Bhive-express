@@ -8,10 +8,33 @@ const Merchandises = require("../models/merchandises");
 const MenuVars = require("../models/menuVars");
 const Variations = require("../models/variations");
 
-//Get all
+// Get all categories
 router.get("/", async (req, res) => {
   try {
-    const all_cat = await Categories.find();
+    const all_cat = await Categories.aggregate([
+      {
+        $addFields: {
+          sortOrder: {
+            $cond: {
+              if: { $gt: ["$order", null] },
+              then: "$order",
+              else: Number.MAX_SAFE_INTEGER
+            }
+          }
+        }
+      },
+      {
+        $sort: {
+          sortOrder: 1
+        }
+      },
+      {
+        $project: {
+          sortOrder: 0
+        }
+      }
+    ]);
+
     res.json(all_cat);
   } catch (err) {
     res.status(500).json({ message: err.message });

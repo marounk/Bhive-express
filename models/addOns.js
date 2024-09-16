@@ -20,7 +20,6 @@ const addOnsTable = new mongoose.Schema({
   order: {
     type: Number,
     required: false,
-    default: "0",
   },
   created_date: {
     type: Date,

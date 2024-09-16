@@ -458,12 +458,12 @@ Content-Type: application/json
 {
     "categories": [
         {
-            "id": "638766716c0bf952dec58fdd",
-            "order": "1"
+            "id": "66dcf043635613c2b1df82d8",
+            "order": "3"
         },
         {
-            "id": "63affd1b32a5ba73383f23bd",
-            "order": "2"
+            "id": "66b75d3dba0869e625eb83e1",
+            "order": "4"
         }
     ]
 }
@@ -566,6 +566,25 @@ GET http://localhost:3000/addOns
 ###
 
 GET http://localhost:3000/addOns/country-6332a0e89cd96e0d9a025da3
+
+###
+
+POST http://localhost:3000/addOns/update-order
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2NDRkNjgwMGJjNGQ0NTE4YmEzMjE5YjQiLCJpYXQiOjE3MjAxMjQzNTN9.-lMeFNw0V3glrSo-eEMRdLZonql1eR6oymt-gzbdxX0
+Content-Type: application/json
+
+{
+    "addOns": [
+        {
+            "id": "63b00f0405db3e97db468b13",
+            "order": "1"
+        },
+        {
+            "id": "63bd90b7d527dae49583a3b0",
+            "order": "3"
+        }
+    ]
+}
 
 ###
 
@@ -952,6 +971,29 @@ GET http://localhost:3000/announcement
 ###
 
 GET http://localhost:3000/announcement/6389d2189c410a9244a30011
+
+###
+
+GET http://localhost:3000/announcement/branch/63d96d762be916f511764073
+
+###
+
+POST http://localhost:3000/announcement/update-order
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYW5hZ2VySWQiOiI2NDRkNjgwMGJjNGQ0NTE4YmEzMjE5YjQiLCJpYXQiOjE3MjAxMjQzNTN9.-lMeFNw0V3glrSo-eEMRdLZonql1eR6oymt-gzbdxX0
+Content-Type: application/json
+
+{
+    "announcement": [
+        {
+            "id": "66e8425795e3c2d34470689d",
+            "order": "1"
+        },
+        {
+            "id": "64316d3181a2deb6ac70d01f",
+            "order": "2"
+        }
+    ]
+}
 
 ###
 
