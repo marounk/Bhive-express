@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 //Get all in a branch
 router.get("/branch/:id", getAnnouncementByBranch, async (req, res) => {
   try {
-    res.send(res.announcement);
+    res.send(res.announcements);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -195,21 +195,32 @@ async function getAnnouncements(req, res, next) {
 }
 
 async function getAnnouncementByBranch(req, res, next) {
-  let announcement;
+  let announcements;
   try {
-    announcement = await Announcement.find({ branch: req.params.id });
-    if (announcement == null) {
-      return res
-        .status(400)
-        .json({ message: "No announcements available in this branch" });
+    const branchId = req.params.id;
+
+    const mongoose = require('mongoose');
+    const objectId = mongoose.Types.ObjectId(branchId);
+
+    announcements = await Announcement.aggregate([
+      { $match: { branch: objectId } },
+      { $addFields: { sortOrder: { $ifNull: ["$order", Number.MAX_SAFE_INTEGER] } } },
+      { $sort: { sortOrder: 1 } },
+      { $project: { sortOrder: 0 } }
+    ]);
+
+    if (announcements.length === 0) {
+      return res.status(400).json({ message: "No announcements available in this branch" });
     }
+
+    res.announcements = announcements;
+    next();
   } catch (err) {
+    console.error("Error:", err.message);
     return res.status(500).json({ message: err.message });
   }
-
-  res.announcement = announcement;
-  next();
 }
+
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
