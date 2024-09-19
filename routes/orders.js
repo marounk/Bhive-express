@@ -131,7 +131,7 @@ router.get("/user/:id", getUserOrders, async (req, res) => {
             }
         }
     });
-});
+ });
 
 //place order
 router.post("/", authenticateToken, async (req, res) => {
@@ -624,6 +624,7 @@ async function getUserOrders(req, res, next) {
             .sort({
                 created_date: -1,
             })
+            .limit(10)
             .populate("countryId branchId");
         if (orders == null) {
             return res.status(400).json({ message: "No orders for this user" });
