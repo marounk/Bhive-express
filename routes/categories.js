@@ -41,6 +41,15 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get category by ID
+router.get("/:id", getCategory, async (req, res) => {
+  try {
+    res.json(res.cat);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 //Add new category
 router.post("/", authenticateToken, async (req, res) => {
   if (res.authData.adminId !== req.body.adminId) {

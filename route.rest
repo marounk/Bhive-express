@@ -438,6 +438,10 @@ GET http://localhost:3000/categories
 
 ###
 
+GET http://localhost:3000/categories/638766806c0bf952dec58fdf
+
+###
+
 POST http://localhost:3000/categories
 Content-Type: application/json
 
@@ -726,7 +730,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2FmZ
 
 ###
 
-GET http://localhost:3000/orders/user/636be6ef546989cece303022
+GET http://localhost:3000/orders/user/63c29f1c6191c16afabbde61
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzI2NTkyNDh9.vJOjTB8hUOsSVM8pwFaYSJgomBOmONN0YeiQKD03Z94
 
 ###
@@ -1025,8 +1029,8 @@ POST http://localhost:3000/home
 Content-Type: application/json
 
 {
-    "branchId": "6332a9b7b87b0f5f682934e7",
-    "userId": "636be6ef546989cece303022"
+    "branchId": "63d96d762be916f511764073",
+    "userId": "63c29f1c6191c16afabbde61"
 }
 
 ###

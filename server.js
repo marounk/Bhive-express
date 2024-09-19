@@ -211,7 +211,15 @@ app.post("/home", async (req, res) => {
     }
   }
 
-  const announcement = await Announcement.find({ branch: req.body.branchId });
+  //const announcement = await Announcement.find({ branch: req.body.branchId });
+  const mongoose = require('mongoose');
+  const objectId = mongoose.Types.ObjectId(req.body.branchId);
+  const announcement = await Announcement.aggregate([
+    { $match: { branch: objectId } },
+    { $addFields: { sortOrder: { $ifNull: ["$order", Number.MAX_SAFE_INTEGER] } } },
+    { $sort: { sortOrder: 1 } },
+    { $project: { sortOrder: 0 } }
+  ]);
   result.push(announcement);
 
   if (req.body.userId !== 0) {
