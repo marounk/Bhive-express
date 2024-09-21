@@ -127,7 +127,7 @@ router.patch("/:id", getCategory, async (req, res) => {
         if (req.body.name != null) {
           res.cat.name = req.body.name;
         }
-        if (req.body.icon != null) {
+        if (req.body.image != null) {
           res.cat.icon = req.body.icon;
         }
         if (req.body.color != null) {
