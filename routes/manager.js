@@ -319,15 +319,16 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
               const userCountry = await Users.findById(order.userId)
               await Cart.find({ userId: order.userId, country: userCountry.country }).remove();
 
+              //send notification to the user
               try {
-                const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+                const tokens = await NotificationTokens.find({ user_id: order.userId }).select('token_device');
                 if (tokens.length === 0) {
                     console.log("No tokens found for this user.");
                 }
                 else{
                   const content = {
                     title: "B.Hive Orders",
-                    body: "Your order is placed successfully. Thank you!",
+                    body: "Your order is confirmed. Thank you!",
                     type: "order",  
                     object: "", 
                     screen: "order-screen"
@@ -345,15 +346,16 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
                 res.status(500).json({ message: err.message });
               }
 
+              // send notification to the manager
               try {
-                const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+                const tokens = await NotificationTokens.find({ user_id: req.body.managerId }).select('token_device');
                 if (tokens.length === 0) {
                     console.log("No tokens found for this user.");
                 }
                 else{
                   const content = {
                     title: "New Order",
-                    body: "New order placed.",
+                    body: "Order status updated to: confirmed",
                     type: "order",  
                     object: "", 
                     screen: "order-screen"

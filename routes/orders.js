@@ -347,7 +347,7 @@ router.post("/", authenticateToken, async (req, res) => {
                             else{
                                 const content = {
                                     title: "B.Hive Orders",
-                                    body: "Your order is placed successfully. Thank you!",
+                                    body: "Your order was sent to the manager. Please wait!",
                                     type: "order",  
                                     object: "", 
                                     screen: "order-screen"
@@ -427,6 +427,59 @@ router.post("/", authenticateToken, async (req, res) => {
             }
         }
     }
+});
+
+//get user order but paginated
+router.get("/paginatedorders/user/:id", async (req, res) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1]; // Extract token from Authorization header
+    if (token == null) return res.sendStatus(401); // If no token, return 401 Unauthorized
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, authData) => {
+        if (err) {
+            return res.sendStatus(403); // If token is invalid, return 403 Forbidden
+        }
+
+        // Check if the userId in the token matches the one in the request params
+        if (authData.userId !== req.params.id) {
+            return res.status(400).json({ message: "Token does not match the user" });
+        }
+
+        const limit = 3; // Set the limit of results per page
+        const page = parseInt(req.query.page) || 1; // Get the page from query or default to 1
+
+        try {
+            // Fetch the user's orders with pagination
+            const orders = await Orders.find({
+                userId: req.params.id,
+                status: { $in: ["SUCCESS", "pending"] }
+            })
+                .sort({ created_date: -1 }) // Sort by most recent orders
+                .skip((page - 1) * limit) // Skip based on current page
+                .limit(limit); // Limit the number of results to 3 per request
+
+            // If no orders are found
+            if (!orders || orders.length === 0) {
+                return res.status(400).json({ message: "No more orders for this user" });
+            }
+
+            // Count the total number of orders
+            const totalOrders = await Orders.countDocuments({
+                userId: req.params.id,
+                status: { $in: ["SUCCESS", "pending"] }
+            });
+
+            // Respond with orders, current page, and total pages
+            res.status(200).json({
+                orders,
+                currentPage: page,
+                totalPages: Math.ceil(totalOrders / limit), // Calculate total pages based on count
+            });
+        } catch (err) {
+            // Handle any server error
+            return res.status(500).json({ message: err.message });
+        }
+    });
 });
 
 //Get order details
