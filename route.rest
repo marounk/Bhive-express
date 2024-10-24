@@ -39,7 +39,7 @@ GET http://localhost:3000/users/clone
 
 ###
 
-GET http://localhost:3000/users/636be6ef546989cece303022
+GET http://localhost:3000/users/644f8ec6fa5d67fed9b71976
 
 ###
 
@@ -58,8 +58,8 @@ Content-Type: application/json
 
 {
     "profile": "x",
-    "name": "rimaa",
-    "email": "rima_ghoulam@hotmail.com",
+    "name": "testing",
+    "email": "test_user@hotmail.com",
     "password": "123",
     "notification_userId": "x"
 }
@@ -95,12 +95,12 @@ POST http://localhost:3000/users/verification/bhivelb@gmail.com/6yzpMn6OSPAnNre
 
 ###
 
-PATCH http://localhost:3000/users/640b92ee7b11cf3671a1e57ax
+PATCH http://localhost:3000/users/644f8ec6fa5d67fed9b71976
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDBiOTJlZTdiMTFjZjM2NzFhMWU1N2EiLCJpYXQiOjE2ODEyMzc4OTl9.6RDIjXuJQLU7iUSSgq7hkYLdwS0pfGhXtA88xOL-QzE
 Content-Type: application/json
 
 {
-    "loyalty_points": 65
+    "password": "202cb962ac59075b964b07152d234b70"
 }
 
 ###
@@ -113,9 +113,9 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "email": "rima_ghoulam@hotmail.com",
+    "email": "maroun-karam@hotmail.com",
     "password": "123",
-    "notification_userId": "05a4f36c-9eb9-4a10-abf9-00a3326c2cf6"
+    "notification_userId": "dLJw_kZFRx-tkwVbRdKxGm:APA91bGGIm0t3NOG5zVZmKuVqwKf1oD1DOHLJO2Effv1g5E4G2NI02UDGVB7ofGEDbBatwFxSF2YzruSEMGZtjSRsiiQkS4E0VQKDYcEX0Z1UZFw16DLsJmr35qFTEoeB1vC4nPAln0J"
 }
 
 ###
@@ -730,8 +730,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2FmZ
 
 ###
 
-GET http://localhost:3000/orders/user/63c29f1c6191c16afabbde61
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzZiZTZlZjU0Njk4OWNlY2UzMDMwMjIiLCJpYXQiOjE2NzI2NTkyNDh9.vJOjTB8hUOsSVM8pwFaYSJgomBOmONN0YeiQKD03Z94
+GET http://localhost:3000/orders/user/644f8ec6fa5d67fed9b71976
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDRmOGVjNmZhNWQ2N2ZlZDliNzE5NzYiLCJpYXQiOjE3Mjk3NjA0NTl9.Hp9aDgu6uuWOzywSkw3oFQjiZklgFM4xMC5gjK_rm20
+
+###
+
+GET http://localhost:3000/orders/paginatedorders/user/644f8ec6fa5d67fed9b71976?page=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDRmOGVjNmZhNWQ2N2ZlZDliNzE5NzYiLCJpYXQiOjE3Mjk3NjA0NTl9.Hp9aDgu6uuWOzywSkw3oFQjiZklgFM4xMC5gjK_rm20
 
 ###
 
