@@ -118,7 +118,7 @@ router.post("/addQuestion", async (req, res) => {
             
                 // Send notifications using the Firebase new
                 for (const token of tokens) {
-                    await sendNotification([token.token_device], content);
+                    await sendNotification(tokens[0].token_device, content);
                     console.log("Sending notification to:", token.token_device);
                 }
             }
@@ -167,7 +167,7 @@ router.post("/addAnswer", async (req, res) => {
             
                 // Send notifications using the Firebase new
                 for (const token of tokens) {
-                    await sendNotification([token.token_device], content);
+                    await sendNotification(tokens[0].token_device, content);
                     console.log("Sending notification to:", token.token_device);
                 }
             }

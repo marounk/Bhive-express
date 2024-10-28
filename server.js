@@ -208,6 +208,42 @@ app.post("/get_all_tokens", async (req, res) => {
   }
 });
 
+//test send notification
+app.post("/test_notification", async (req, res) => {
+  const content = {
+    title: "B.Hive Notifications",
+    body: "This is a testing message.",
+    type: "order",  
+    object: "", 
+    screen: "order-screen"
+  };
+
+  try {
+    // Retrieve all tokens for the user at once
+    const tokens = await NotificationTokens.find({ user_id: req.body.userId }).select('token_device');
+    if (tokens.length === 0) {
+      return res.status(404).json({ message: "No tokens found for the user." });
+    }
+
+    // Send notification to each token individually
+    for (const token of tokens) {
+      try {
+        await sendNotification(tokens[0].token_device, content);
+        console.log("Notification sent to:", token);
+      } catch (error) {
+        console.error("Failed to send notification to:", token, error.message);
+      }
+    }
+
+    res.status(200).json({ message: "Notifications sent individually to each token." });
+  } catch (error) {
+    console.error("Error sending notifications:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
 //Home api : announcement + points + expired
 app.post("/home", async (req, res) => {
   let result = [];
@@ -449,7 +485,7 @@ app.post("/check_pending", async (req, res) => {
               
                   // Send notifications using the Firebase new
                   for (const token of tokens) {
-                      await sendNotification([token.token_device], content);
+                      await sendNotification(tokens[0].token_device, content);
                       console.log("Sending notification to:", token.token_device);
                   }
               }
@@ -503,7 +539,7 @@ app.post("/check_pending", async (req, res) => {
                 
                     // Send notifications using the Firebase new
                     for (const token of tokens) {
-                        await sendNotification([token.token_device], content);
+                        await sendNotification(tokens[0].token_device, content);
                         console.log("Sending notification to:", token.token_device);
                     }
                 }
@@ -675,7 +711,7 @@ app.post("/check_pending", async (req, res) => {
                 
                     // Send notifications using the Firebase new
                     for (const token of tokens) {
-                        await sendNotification([token.token_device], content);
+                        await sendNotification(tokens[0].token_device, content);
                         console.log("Sending notification to:", token.token_device);
                     }
                 }
@@ -701,7 +737,7 @@ app.post("/check_pending", async (req, res) => {
                 
                     // Send notifications using the Firebase new
                     for (const token of tokens) {
-                        await sendNotification([token.token_device], content);
+                        await sendNotification(tokens[0].token_device, content);
                         console.log("Sending notification to:", token.token_device);
                     }
                 }
@@ -753,7 +789,7 @@ app.post("/check_pending", async (req, res) => {
                 
                     // Send notifications using the Firebase new
                     for (const token of tokens) {
-                        await sendNotification([token.token_device], content);
+                        await sendNotification(tokens[0].token_device, content);
                         console.log("Sending notification to:", token.token_device);
                     }
                 }

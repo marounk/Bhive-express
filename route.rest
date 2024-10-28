@@ -1058,6 +1058,15 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:3000/test_notification
+Content-Type: application/json
+
+{
+    "userId": "644f8ec6fa5d67fed9b71976"
+}
+
+###
+
 POST http://localhost:3000/home
 Content-Type: application/json
 
