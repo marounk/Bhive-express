@@ -1030,6 +1030,34 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:3000/add-notification
+Content-Type: application/json
+
+{
+    "userId": "644f8ec6fa5d67fed9b71976",
+    "notificationUserId": "dZGnhdZORO-2nb2Vh54ra5:APA91bG9MT4Fgr2wMEkudI-5HJq09QlrYmFnaYQhxuvg9NAPLQw09lIAng8hnCXq0nWE4qKN3QrYKH9emYw_O9Pc1f9kFIZUvUCJgNdrneAZA4iA6bhWVJTo3sQ6JTB6OGTjqVUuApnh"
+}
+
+###
+
+POST http://localhost:3000/remove-notification
+Content-Type: application/json
+
+{
+    "userId": "644f8ec6fa5d67fed9b71976"
+}
+
+###
+
+POST http://localhost:3000/get_all_tokens
+Content-Type: application/json
+
+{
+    "userId": "644f8ec6fa5d67fed9b71976"
+}
+
+###
+
 POST http://localhost:3000/home
 Content-Type: application/json
 

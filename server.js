@@ -132,8 +132,15 @@ app.post("/login", async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 
-  find.notification_userId = req.body.notification_userId;
-  find.save();
+  // find.notification_userId = req.body.notification_userId;
+  // find.save();
+
+  const newToken = new NotificationTokens({
+    user_id: find._id,
+    token_device: req.body.notification_userId,
+  });
+
+  await newToken.save();
 
   const user = { userId: find._id };
   const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
@@ -188,6 +195,16 @@ app.post("/add-notification", async (req, res) => {
     res.status(200).json({ message: "Notification token added successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+//test get all notification tokens
+app.post("/get_all_tokens", async (req, res) => {
+  try {
+    const tokens = await NotificationTokens.find({ userId: req.body.userId });
+    res.json(tokens);
+  } catch (error) {
+    res.status(500).json({ error: "Error retrieving tokens" });
   }
 });
 
