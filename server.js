@@ -135,12 +135,23 @@ app.post("/login", async (req, res) => {
   // find.notification_userId = req.body.notification_userId;
   // find.save();
 
-  const newToken = new NotificationTokens({
+  const existingToken = await NotificationTokens.findOne({
     user_id: find._id,
     token_device: req.body.notification_userId,
   });
 
-  await newToken.save();
+  // If the token does not exist, create a new one
+  if (!existingToken) {
+    const newToken = new NotificationTokens({
+      user_id: find._id,
+      token_device: req.body.notification_userId,
+    });
+
+    await newToken.save();
+  } else {
+    // Optionally, you can log or handle the case where the token already exists
+    console.log("Token already exists for this user");
+  }
 
   const user = { userId: find._id };
   const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
@@ -228,7 +239,7 @@ app.post("/test_notification", async (req, res) => {
     // Send notification to each token individually
     for (const token of tokens) {
       try {
-        await sendNotification(tokens[0].token_device, content);
+        await sendNotification(token.token_device, content);
         console.log("Notification sent to:", token);
       } catch (error) {
         console.error("Failed to send notification to:", token, error.message);
