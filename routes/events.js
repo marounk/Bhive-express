@@ -101,7 +101,7 @@ router.post("/", authenticateToken, async (req, res) => {
           
               // Send notifications using the Firebase new
               for (const token of tokens) {
-                  await sendNotification(tokens[0].token_device, content);
+                  await sendNotification(token.token_device, content);
                   console.log("Sending notification to:", token.token_device);
               }
           }
@@ -179,7 +179,7 @@ router.post("/book", authenticateToken, async (req, res) => {
               
                   // Send notifications using the Firebase new
                   for (const token of tokens) {
-                      await sendNotification(tokens[0].token_device, content);
+                      await sendNotification(token.token_device, content);
                       console.log("Sending notification to:", token.token_device);
                   }
               }
@@ -205,7 +205,7 @@ router.post("/book", authenticateToken, async (req, res) => {
               
                   // Send notifications using the Firebase new
                   for (const token of tokens) {
-                      await sendNotification(tokens[0].token_device, content);
+                      await sendNotification(token.token_device, content);
                       console.log("Sending notification to:", token.token_device);
                   }
               }
