@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const md5 = require("md5");
 const request = require("request");
- 
+  
 const Users = require("./models/users");
 const Points = require("./models/points");
 const Announcement = require("./models/announcement");
