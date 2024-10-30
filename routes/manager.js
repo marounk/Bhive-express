@@ -328,7 +328,7 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
                 else{
                   const content = {
                     title: "B.Hive Orders",
-                    body: "Your order is confirmed. Thank you!",
+                    body: "Order confirmed. Thank you!",
                     type: "order",  
                     object: "", 
                     screen: "order-screen"

@@ -347,7 +347,7 @@ router.post("/", authenticateToken, async (req, res) => {
                             else{
                                 const content = {
                                     title: "B.Hive Orders",
-                                    body: "Your order was sent to the manager. Please wait!",
+                                    body: "Your order is placed successfully. Thank you!",
                                     type: "order",  
                                     object: "", 
                                     screen: "order-screen"
@@ -512,7 +512,7 @@ router.patch("/clover/:id", async (req, res) => {
                 else{
                     const content = {
                         title: "B.Hive Orders",
-                        body: "Your order is placed successfully. Thank you!",
+                        body: "Order submitted for approval",
                         type: "order",  
                         object: "", 
                         screen: "order-screen"
