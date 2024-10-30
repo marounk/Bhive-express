@@ -481,6 +481,34 @@ router.patch("/confirm-:id", authenticateToken, async (req, res) => {
             } catch (err) {
               res.status(400).json({ message: err.message });
             }
+
+            //send notification to the user
+            try {
+              const tokens = await NotificationTokens.find({ user_id: order.userId._id }).select('token_device');
+              if (tokens.length === 0) {
+                  console.log("No tokens found for this user.");
+              }
+              else{
+                const content = {
+                  title: "B.Hive Orders",
+                  body: "Order confirmed. Thank you!",
+                  type: "order",  
+                  object: "", 
+                  screen: "order-screen"
+                };
+              
+                  // Send notifications using the Firebase new
+                  for (const token of tokens) {
+                      await sendNotification(token.token_device, content);
+                      console.log("Sending notification to:", token.token_device);
+                  }
+              }
+          
+            } catch (err) {
+              console.error('Error sending notification:', err);
+              res.status(500).json({ message: err.message });
+            }
+
         }
       } else if (status === "preparing") {
         content_sent = "Your order is bee-ing prepared";
