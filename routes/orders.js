@@ -429,6 +429,50 @@ router.post("/", authenticateToken, async (req, res) => {
     }
 });
 
+//send notification to user if clover fail
+router.post('/fail-order', async (req, res) => {
+    const order_id = req.body.orderId;
+  
+    if (!order_id) {
+      return res.status(400).json({ message: 'Order ID is required.' });
+    }
+  
+    try {
+      const order = await Orders.findById(order_id);
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found.' });
+      }
+      order.status = 'FAIL';
+      await order.save();
+  
+      // Find notification tokens for the user associated with the order
+      const tokens = await NotificationTokens.find({ user_id: order.userId }).select('token_device');
+      if (tokens.length === 0) {
+        console.log('No tokens found for this user.');
+      } else {
+        // Notification content
+        const content = {
+          title: 'B.Hive Orders',
+          body: 'Your order could not be processed due to insufficient funds on your card. Please check your balance and place a new order.',
+          type: 'order',
+          object: '',
+          screen: 'order-screen',
+        };
+  
+        // Send notifications
+        for (const token of tokens) {
+          await sendNotification(token.token_device, content);
+          console.log('Sending notification to:', token.token_device);
+        }
+      }
+  
+      res.status(200).json({ message: 'Order status updated to fail and notification sent.' });
+    } catch (err) {
+      console.error('Error processing fail-order request:', err);
+      res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
 //get user order but paginated
 router.get("/paginatedorders/user/:id", async (req, res) => {
     const authHeader = req.headers["authorization"];
